@@ -103,8 +103,8 @@ interface SkillSeed {
   platform?: "GOOGLE" | "MICROSOFT" | "BOTH"; // defaults to "BOTH" (suite-agnostic) when omitted
 }
 
-// Representative skills per area/level, written in the college's Google
-// Workspace context per the brief. Administrators can add/edit/import many
+// Representative skills per area/level, written in a Google Workspace
+// education context per the brief. Administrators can add/edit/import many
 // more via the admin console — this seed is a realistic starting set, not a
 // literal transcription of the full spreadsheet.
 const SKILLS: Record<AreaKey, Record<LevelName, SkillSeed[]>> = {
@@ -117,10 +117,10 @@ const SKILLS: Record<AreaKey, Record<LevelName, SkillSeed[]>> = {
         practicalOutcome:
           "Get straight into your working day without repeated password prompts, while keeping your account secure.",
         whyItMatters:
-          "Secure, smooth sign-in reduces daily friction and protects both your account and college data.",
+          "Secure, smooth sign-in reduces daily friction and protects both your account and institutional data.",
         howToSteps: [
-          "On a college device or the login page, choose \"Sign in with Google\" rather than typing a separate password.",
-          "Enter your college email address and, if prompted, approve the sign-in on your phone or authenticator app.",
+          "On a work device or the login page, choose \"Sign in with Google\" rather than typing a separate password.",
+          "Enter your work email address and, if prompted, approve the sign-in on your phone or authenticator app.",
           "Tick \"Stay signed in\" on trusted personal devices so you're not prompted every time.",
           "If a new site asks for a password instead of offering Google sign-in, check with IT before creating a new one.",
         ],
@@ -131,14 +131,14 @@ const SKILLS: Record<AreaKey, Record<LevelName, SkillSeed[]>> = {
       },
       {
         title: "Sign in securely with Microsoft 365 SSO",
-        description: "Log into college devices and Microsoft 365 using single sign-on (SSO) confidently and securely.",
+        description: "Log into work devices and Microsoft 365 using single sign-on (SSO) confidently and securely.",
         practicalOutcome:
           "Get straight into your working day without repeated password prompts, while keeping your account secure.",
         whyItMatters:
-          "Secure, smooth sign-in reduces daily friction and protects both your account and college data.",
+          "Secure, smooth sign-in reduces daily friction and protects both your account and institutional data.",
         howToSteps: [
-          "On a college device or the login page, choose \"Sign in with Microsoft\" rather than typing a separate password.",
-          "Enter your college email address and complete multi-factor authentication (an approval on the Microsoft Authenticator app, or a code).",
+          "On a work device or the login page, choose \"Sign in with Microsoft\" rather than typing a separate password.",
+          "Enter your work email address and complete multi-factor authentication (an approval on the Microsoft Authenticator app, or a code).",
           "Tick \"Stay signed in\" on trusted personal devices so you're not prompted every time.",
           "If a new site asks for a password instead of offering Microsoft sign-in, check with IT before creating a new one.",
         ],
@@ -483,7 +483,7 @@ const SKILLS: Record<AreaKey, Record<LevelName, SkillSeed[]>> = {
         practicalOutcome: "Find trustworthy material quickly instead of wading through irrelevant results.",
         whyItMatters: "Strong search skills underpin almost every other digital task.",
         howToSteps: [
-          "Use 3–5 specific keywords rather than a full sentence, e.g. \"BTEC health social care unit 3 resources\".",
+          "Use 3–5 specific keywords rather than a full sentence, e.g. \"Year 9 photosynthesis revision resources\".",
           "Put exact phrases in quotation marks to search for that precise wording.",
           "Add site:ac.uk or site:gov.uk to restrict results to education or government sources.",
           "Use the search engine's \"Tools\" filter to restrict results to recently published, up-to-date material.",
@@ -495,7 +495,7 @@ const SKILLS: Record<AreaKey, Record<LevelName, SkillSeed[]>> = {
       {
         title: "Spot phishing and unreliable sources",
         description: "Identify suspicious emails (phishing) and evaluate the reliability of online sources.",
-        practicalOutcome: "Protect yourself and the college from scams while helping others spot red flags.",
+        practicalOutcome: "Protect yourself and your organisation from scams while helping others spot red flags.",
         whyItMatters: "Basic scepticism and verification habits are a frontline defence against cyber threats.",
         howToSteps: [
           "Hover over (don't click) any link in an email to check where it actually leads before trusting it.",
@@ -511,7 +511,7 @@ const SKILLS: Record<AreaKey, Record<LevelName, SkillSeed[]>> = {
       {
         title: "Spot phishing and unreliable sources in Outlook",
         description: "Identify suspicious emails (phishing) and evaluate the reliability of online sources.",
-        practicalOutcome: "Protect yourself and the college from scams while helping others spot red flags.",
+        practicalOutcome: "Protect yourself and your organisation from scams while helping others spot red flags.",
         whyItMatters: "Basic scepticism and verification habits are a frontline defence against cyber threats.",
         howToSteps: [
           "Hover over (don't click) any link in an email to check where it actually leads before trusting it.",
@@ -563,7 +563,7 @@ const SKILLS: Record<AreaKey, Record<LevelName, SkillSeed[]>> = {
         whyItMatters: "Modelling correct referencing sets the standard learners are expected to follow.",
         howToSteps: [
           "Note the author, title, publisher and date for any source as soon as you use it, not afterwards.",
-          "In Google Docs, use Tools > Citations to build a formatted reference list in your college's required style.",
+          "In Google Docs, use Tools > Citations to build a formatted reference list in your institution's required style.",
           "Add an in-text citation or footnote wherever you've directly quoted or closely paraphrased a source.",
           "Include a short \"References\" section at the end of the document, not just links scattered through the text.",
         ],
@@ -579,7 +579,7 @@ const SKILLS: Record<AreaKey, Record<LevelName, SkillSeed[]>> = {
         whyItMatters: "Modelling correct referencing sets the standard learners are expected to follow.",
         howToSteps: [
           "Note the author, title, publisher and date for any source as soon as you use it, not afterwards.",
-          "In Word, use References > Citations & Bibliography to build a formatted reference list in your college's required style.",
+          "In Word, use References > Citations & Bibliography to build a formatted reference list in your institution's required style.",
           "Add an in-text citation or footnote wherever you've directly quoted or closely paraphrased a source.",
           "Include a short \"References\" section at the end of the document, not just links scattered through the text.",
         ],
@@ -699,8 +699,8 @@ const SKILLS: Record<AreaKey, Record<LevelName, SkillSeed[]>> = {
       {
         title: "Apply Creative Commons licensing correctly",
         description: "Apply Creative Commons licenses correctly when re-using external images or media.",
-        practicalOutcome: "Use rich media in your materials confidently, without copyright risk to the college.",
-        whyItMatters: "Correct licensing protects the college and models good digital citizenship.",
+        practicalOutcome: "Use rich media in your materials confidently, without copyright risk to your institution.",
+        whyItMatters: "Correct licensing protects your institution and models good digital citizenship.",
         howToSteps: [
           "Search using a filter for reusable content, e.g. an image search's \"Usage rights\" filter.",
           "Check the specific licence (e.g. CC BY, CC BY-NC) on the source page — they have different rules.",
@@ -1072,7 +1072,7 @@ const SKILLS: Record<AreaKey, Record<LevelName, SkillSeed[]>> = {
         practicalOutcome: "Give learners a memorable, hard-to-replicate experience for hands-on or high-stakes topics.",
         whyItMatters: "Immersive tools work best where a topic is otherwise hard, expensive or unsafe to practise.",
         howToSteps: [
-          "Book a slot in the college's Immersive Space or Igloo through the usual room-booking system.",
+          "Book a slot in your institution's Immersive Space or Igloo through the usual room-booking system.",
           "Browse an existing 3D or 360° asset library first rather than building content from scratch.",
           "Run a short, low-stakes trial session with a small group before committing a whole class to it.",
           "Ask attendees for quick feedback afterwards on comfort and clarity, not just enjoyment.",
@@ -1122,7 +1122,7 @@ const SKILLS: Record<AreaKey, Record<LevelName, SkillSeed[]>> = {
         whyItMatters: "A well-configured Gem saves every future user the work of re-explaining context each time.",
         howToSteps: [
           "In Gemini, choose \"Create a Gem\" and give it a clear name and purpose.",
-          "Write instructions describing exactly how it should behave, e.g. \"always answer as a BTEC assessor would\".",
+          "Write instructions describing exactly how it should behave, e.g. \"always answer as an experienced course assessor would\".",
           "Upload key reference documents (specifications, templates) for it to draw on.",
           "Test it with a colleague's real question before sharing the Gem with the wider team.",
         ],
@@ -1138,7 +1138,7 @@ const SKILLS: Record<AreaKey, Record<LevelName, SkillSeed[]>> = {
         whyItMatters: "A well-configured agent saves every future user the work of re-explaining context each time.",
         howToSteps: [
           "In Copilot Studio, choose \"Create an agent\" and give it a clear name and purpose.",
-          "Write instructions describing exactly how it should behave, e.g. \"always answer as a BTEC assessor would\".",
+          "Write instructions describing exactly how it should behave, e.g. \"always answer as an experienced course assessor would\".",
           "Upload key reference documents (specifications, templates) for it to draw on.",
           "Test it with a colleague's real question before sharing the agent with the wider team.",
         ],
@@ -1170,7 +1170,7 @@ const SKILLS: Record<AreaKey, Record<LevelName, SkillSeed[]>> = {
         whyItMatters:
           "Some vocational skills — healthcare simulation, site inspection — are best taught immersively.",
         howToSteps: [
-          "Identify a scenario across the college that's genuinely hard, costly or unsafe to practise in real life.",
+          "Identify a scenario across your institution that's genuinely hard, costly or unsafe to practise in real life.",
           "Approach the immersive learning lead with that specific use case rather than a general request.",
           "Run a pilot session with one curriculum area and gather structured feedback from staff and learners.",
           "Present the pilot's outcomes to senior leaders to make the case for wider rollout.",
@@ -1583,7 +1583,7 @@ const SKILLS: Record<AreaKey, Record<LevelName, SkillSeed[]>> = {
         practicalOutcome: "Build your skills through structured, supported learning opportunities.",
         whyItMatters: "Dedicated training time accelerates skill-building beyond what's possible day-to-day.",
         howToSteps: [
-          "Check the college CPD calendar or staff portal for upcoming digital skills sessions.",
+          "Check your institution's CPD calendar or staff portal for upcoming digital skills sessions.",
           "Book your place and add it to your Calendar so it's protected time, not squeezed out.",
           "Bring one real task or question from your own work to apply the session to.",
           "Note down one thing you'll actually try afterwards, and add it to your development plan.",
@@ -1641,17 +1641,17 @@ const SKILLS: Record<AreaKey, Record<LevelName, SkillSeed[]>> = {
       },
       {
         title: "Complete mandatory digital training",
-        description: "Navigate the college staff portal or VLE to complete mandatory digital training.",
+        description: "Navigate your institution's staff portal or VLE to complete mandatory digital training.",
         practicalOutcome: "Stay compliant and up to date with required training with minimum friction.",
         whyItMatters: "Comfort navigating the VLE removes an unnecessary barrier to completing required CPD.",
         howToSteps: [
-          "Log into the staff portal/VLE using your college SSO credentials.",
+          "Log into the staff portal/VLE using your institution's SSO credentials.",
           "Find the \"Mandatory training\" or \"My courses\" section from the main dashboard.",
           "Work through each module in order — most auto-save your progress if you need to stop partway.",
           "Download or screenshot your completion certificate for your own records.",
         ],
         benefitCategories: ["ORGANISATION", "PROFESSIONAL_PRACTICE"],
-        tool: "College VLE",
+        tool: "Institution VLE",
         estimatedTimeMins: 20,
       },
     ],
@@ -1777,12 +1777,12 @@ const SKILLS: Record<AreaKey, Record<LevelName, SkillSeed[]>> = {
         title: "Achieve external digital recognition",
         description:
           "Pursue and achieve external digital recognition, e.g. Google Certified Educator Level 1/2 or Google Champion.",
-        practicalOutcome: "Bring recognised external expertise back into the college.",
-        whyItMatters: "External recognition validates practice and can inform whole-college strategy.",
+        practicalOutcome: "Bring recognised external expertise back into your institution.",
+        whyItMatters: "External recognition validates practice and can inform whole-institution strategy.",
         howToSteps: [
           "Complete Google Certified Educator Level 1, then progress to Level 2 training units.",
           "Apply to your regional Google Champion or equivalent programme where available.",
-          "Keep a running log of how you've applied what you've learned back in college.",
+          "Keep a running log of how you've applied what you've learned back at your institution.",
           "Share your progress and outcomes with your line manager as part of appraisal evidence.",
         ],
         benefitCategories: ["LEADERSHIP", "PROFESSIONAL_PRACTICE"],
@@ -1794,12 +1794,12 @@ const SKILLS: Record<AreaKey, Record<LevelName, SkillSeed[]>> = {
         title: "Achieve external digital recognition (Microsoft)",
         description:
           "Pursue and achieve external digital recognition, e.g. Microsoft Innovative Educator Expert.",
-        practicalOutcome: "Bring recognised external expertise back into the college.",
-        whyItMatters: "External recognition validates practice and can inform whole-college strategy.",
+        practicalOutcome: "Bring recognised external expertise back into your institution.",
+        whyItMatters: "External recognition validates practice and can inform whole-institution strategy.",
         howToSteps: [
           "Complete the Microsoft Innovative Educator (MIE) badge, then apply for MIE Expert status.",
           "Submit your application showcasing how you've used Microsoft tools to impact teaching or admin.",
-          "Keep a running log of how you've applied what you've learned back in college.",
+          "Keep a running log of how you've applied what you've learned back at your institution.",
           "Share your progress and outcomes with your line manager as part of appraisal evidence.",
         ],
         benefitCategories: ["LEADERSHIP", "PROFESSIONAL_PRACTICE"],
@@ -1839,8 +1839,8 @@ const SKILLS: Record<AreaKey, Record<LevelName, SkillSeed[]>> = {
       },
       {
         title: "Mentor new staff through digital onboarding",
-        description: "Mentor new staff members during onboarding to help them get comfortable with college digital systems.",
-        practicalOutcome: "Help new colleagues become productive with college systems much faster.",
+        description: "Mentor new staff members during onboarding to help them get comfortable with your institution's digital systems.",
+        practicalOutcome: "Help new colleagues become productive with your institution's systems much faster.",
         whyItMatters: "A confident start with digital systems shapes a new colleague's whole first term.",
         howToSteps: [
           "Meet in their first week specifically to walk through the systems they'll use daily.",
@@ -1881,7 +1881,7 @@ const SKILLS: Record<AreaKey, Record<LevelName, SkillSeed[]>> = {
           "Go to your Microsoft 365 account settings (office.com > profile picture > \"View account\") to upload a clear headshot.",
           "In Outlook, go to Settings > Mail > Compose and reply to add a professional signature.",
           "Include your name, job title and department in the signature.",
-          "Check your displayed name is correct in the college's Microsoft 365 directory (Global Address List).",
+          "Check your displayed name is correct in your institution's Microsoft 365 directory (Global Address List).",
         ],
         benefitCategories: ["PROFESSIONAL_PRACTICE"],
         tool: "Microsoft 365",
@@ -1905,12 +1905,12 @@ const SKILLS: Record<AreaKey, Record<LevelName, SkillSeed[]>> = {
       },
       {
         title: "Protect passwords and personal data",
-        description: "Protect personal data and passwords in line with college IT security policies.",
-        practicalOutcome: "Reduce the risk of your account being compromised, and protect college data.",
+        description: "Protect personal data and passwords in line with your institution's IT security policies.",
+        practicalOutcome: "Reduce the risk of your account being compromised, and protect institutional data.",
         whyItMatters: "Good password hygiene is one of the simplest, highest-impact security habits.",
         howToSteps: [
-          "Use a different, strong password for your college account than any personal account.",
-          "Turn on two-factor authentication if it isn't already required by the college.",
+          "Use a different, strong password for your work account than any personal account.",
+          "Turn on two-factor authentication if it isn't already required by your institution.",
           "Never share your password over email or Chat, even with IT — legitimate staff won't ask for it.",
           "Use a password manager to generate and store passwords rather than reusing memorable ones.",
         ],
@@ -2442,11 +2442,11 @@ async function main() {
   const passwordHash = await bcrypt.hash("Password123!", 10);
 
   const admin = await prisma.user.upsert({
-    where: { email: "admin@college.ac.uk" },
+    where: { email: "admin@example.ac.uk" },
     update: {},
     create: {
       name: "Alex Morgan",
-      email: "admin@college.ac.uk",
+      email: "admin@example.ac.uk",
       passwordHash,
       role: "ADMIN",
       department: "Digital Learning",
@@ -2456,11 +2456,11 @@ async function main() {
   });
 
   const freshStaff = await prisma.user.upsert({
-    where: { email: "new.starter@college.ac.uk" },
+    where: { email: "new.starter@example.ac.uk" },
     update: {},
     create: {
       name: "Jordan Lee",
-      email: "new.starter@college.ac.uk",
+      email: "new.starter@example.ac.uk",
       passwordHash,
       role: "STAFF",
       department: "Business Studies",

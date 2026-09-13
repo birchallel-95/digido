@@ -19,7 +19,7 @@ const jakarta = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   title: "DigiDo",
   description:
-    "Build your digital capability, one practical improvement at a time — a self-paced digital skills companion for college staff.",
+    "Build your digital capability, one practical improvement at a time — a self-paced digital skills companion for educators.",
 };
 
 export const viewport: Viewport = {

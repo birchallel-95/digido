@@ -35,7 +35,7 @@ export default function LandingPage() {
       <section className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 pt-10 pb-16 sm:pt-16 sm:pb-24 grid lg:grid-cols-2 gap-12 items-center">
         <div>
           <span className="inline-flex items-center rounded-full bg-[var(--color-brand-soft)] text-[var(--color-brand-text)] px-3 py-1 text-xs font-semibold mb-5">
-            For Further Education staff
+            For educators everywhere
           </span>
           <h1 className="font-display text-4xl sm:text-5xl font-extrabold tracking-tight text-[var(--color-ink)] leading-[1.1]">
             Build your digital capability, one practical improvement at a time.
@@ -151,7 +151,7 @@ export default function LandingPage() {
       <footer className="border-t border-[var(--color-border)] py-8">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 text-sm text-[var(--color-ink-faint)] flex flex-col sm:flex-row justify-between gap-2">
           <span>DigiDo — a development tool, not a performance record.</span>
-          <span>Built for Further Education staff.</span>
+          <span>Built for educators — schools, colleges, universities and training providers.</span>
         </div>
       </footer>
     </div>

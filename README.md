@@ -1,10 +1,11 @@
 # DigiDo
 
-A swipe-based digital capability development platform for Further Education
-college staff, built around the principle: **"Build your digital capability,
-one practical improvement at a time."** ("Digital Capability Passport" is
-the name of the in-app CPD record feature — see `/passport` — not the app
-itself, which is called DigiDo.)
+A swipe-based digital capability development platform for educators and
+education support staff — schools, colleges, universities and training
+providers alike — built around the principle: **"Build your digital
+capability, one practical improvement at a time."** ("Digital Capability
+Passport" is the name of the in-app CPD record feature — see `/passport` —
+not the app itself, which is called DigiDo.)
 
 ## Quick start
 
@@ -22,8 +23,8 @@ Open http://localhost:3000.
 | Email | Role | Notes |
 |---|---|---|
 | `birchallel@gmail.com` | Staff | "Lived-in" account with 6-day momentum streak, mixed progress across 4 of 6 areas, evidence, and earned milestones — the best account to explore the product with. |
-| `new.starter@college.ac.uk` | Staff | Fresh account, not yet onboarded — shows the onboarding flow. |
-| `admin@college.ac.uk` | Admin | Skill management, PedTech facts, CSV import, settings, aggregated analytics. |
+| `new.starter@example.ac.uk` | Staff | Fresh account, not yet onboarded — shows the onboarding flow. |
+| `admin@example.ac.uk` | Admin | Skill management, PedTech facts, CSV import, settings, aggregated analytics. |
 
 ## Tech stack & key decisions
 
@@ -68,8 +69,8 @@ Open http://localhost:3000.
   (suite-agnostic; shown to everyone). New staff pick a platform during
   onboarding (changeable later in Profile), and `src/lib/platform.ts`'s
   `platformWhere()` filters every skill query — progression math, the swipe
-  deck, and recommendations — so a Microsoft college never sees "open Google
-  Forms" and vice versa. The seed data mirrors every platform-specific skill
+  deck, and recommendations — so a Microsoft-based institution never sees
+  "open Google Forms" and vice versa. The seed data mirrors every platform-specific skill
   as a genuine pair (same outcome, real tool-specific steps) rather than
   reusing one description for both, so progress percentages stay comparable
   between platforms. Admins set/import `platform` per skill in the skill form
@@ -134,7 +135,7 @@ layouts.
   brief §13) aren't implemented; the weekly target is a plain "N days" count.
 - **Admin analytics recompute progress per staff member on every page load**
   (`src/lib/adminAnalytics.ts`) rather than reading a precomputed aggregate
-  table. Fine at demo/small-college scale; flagged in a code comment as the
+  table. Fine at demo/small-institution scale; flagged in a code comment as the
   thing to change first if this ever needs to serve hundreds of staff.
 - **XLSX import** isn't built, only CSV (which was the required format).
 - Skill **images/video** fields exist end-to-end in the schema and admin form

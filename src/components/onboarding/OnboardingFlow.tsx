@@ -87,7 +87,7 @@ export function OnboardingFlow() {
               {STEPS[step] === "platform" && (
                 <div>
                   <h2 className="font-display text-2xl font-bold text-[var(--color-ink)] mb-2 text-center">
-                    Which does your college use?
+                    Which does your school or organisation use?
                   </h2>
                   <p className="text-[var(--color-ink-muted)] text-center mb-6">
                     We&apos;ll tailor examples and step-by-step instructions to your tools. You can change this

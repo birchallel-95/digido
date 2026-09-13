@@ -118,7 +118,7 @@ export function ProfileForm({
         <CardBody className="pt-5">
           <h2 className="font-display font-bold text-[var(--color-ink)] mb-1">Digital platform</h2>
           <p className="text-sm text-[var(--color-ink-muted)] mb-4">
-            Skills, examples and step-by-step instructions are tailored to whichever platform your college uses.
+            Skills, examples and step-by-step instructions are tailored to whichever platform your school or organisation uses.
           </p>
           <div className="grid sm:grid-cols-3 gap-2">
             {PLATFORM_OPTIONS.map((opt) => {
