@@ -1,26 +1,107 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-jakarta);
+
+  /* Neutral surface system */
+  --color-surface: #faf9f7;
+  --color-surface-raised: #ffffff;
+  --color-surface-sunken: #f2f1ee;
+  --color-border: #e7e5e0;
+  --color-ink: #1c1a17;
+  --color-ink-muted: #6b6862;
+  --color-ink-faint: #9c988f;
+
+  /* Brand */
+  --color-brand: #0f766e;
+  --color-brand-dark: #0b5c56;
+  --color-brand-light: #ccfbf1;
+  --color-brand-soft: #f0fdfa;
+
+  /* Level identity — colour AND shape/icon differentiate (WCAG) */
+  --color-navigator: #2563eb;
+  --color-navigator-soft: #eff6ff;
+  --color-elevator: #7c3aed;
+  --color-elevator-soft: #f5f3ff;
+  --color-catalyst: #db2777;
+  --color-catalyst-soft: #fdf2f8;
+
+  /* Status */
+  --color-success: #15803d;
+  --color-success-soft: #f0fdf4;
+  --color-warning: #b45309;
+  --color-warning-soft: #fffbeb;
+  --color-danger: #b91c1c;
+
+  --radius-card: 1.25rem;
+  --radius-control: 0.85rem;
+
+  --shadow-card: 0 1px 2px rgba(28, 26, 23, 0.04), 0 8px 24px -12px rgba(28, 26, 23, 0.12);
+  --shadow-raised: 0 4px 12px rgba(28, 26, 23, 0.06), 0 16px 40px -16px rgba(28, 26, 23, 0.18);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  color-scheme: light;
+}
+
+* {
+  border-color: var(--color-border);
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, .font-display {
+  font-family: var(--font-display), var(--font-sans), ui-sans-serif, sans-serif;
+}
+
+/* Strong, visible focus states everywhere (WCAG 2.2 AA) */
+:focus-visible {
+  outline: 2.5px solid var(--color-brand);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Respect reduced-motion preference globally */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Utility: visually-hidden but screen-reader accessible */
+.sr-only-focusable:not(:focus) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Larger min touch target on interactive elements at small widths */
+@media (max-width: 640px) {
+  button, a[role="button"] {
+    min-height: 44px;
+  }
+}
+
+::selection {
+  background: var(--color-brand-light);
+  color: var(--color-brand-dark);
 }

@@ -1,0 +1,283 @@
+// Digital Capability Passport — data model
+// NOTE: using SQLite for zero-config local/demo use. To move to Postgres for
+// production, change `provider` below to "postgresql", point DATABASE_URL at
+// a Postgres instance, and re-introduce native `enum` blocks in place of the
+// `String` fields marked "// enum:" below (SQLite has no native enum support
+// in Prisma, so those values are validated in the TypeScript layer instead —
+// see src/lib/constants.ts).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Auth (NextAuth.js Prisma adapter shape) + application User fields
+// ---------------------------------------------------------------------------
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  passwordHash  String? // null for OAuth-only accounts
+  role          String    @default("STAFF") // enum: STAFF | ADMIN
+  department    String?
+  jobTitle      String?
+  onboarded     Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  lastLogin     DateTime?
+
+  accounts      Account[]
+  sessions      Session[]
+  skillStatuses UserSkillStatus[]
+  activities    DevelopmentActivity[]
+  momentum      UserMomentum?
+  milestones    UserMilestone[]
+  evidence      Evidence[]
+  priorities    UserPriority[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ---------------------------------------------------------------------------
+// Capability framework (admin-managed)
+// ---------------------------------------------------------------------------
+
+model CapabilityArea {
+  id          String  @id @default(cuid())
+  name        String  @unique
+  shortName   String?
+  description String
+  icon        String? // lucide icon name
+  color       String // hex, used for radar/journey theming
+  order       Int     @default(0)
+  active      Boolean @default(true)
+
+  skills Skill[]
+  badges Badge[]
+}
+
+model Level {
+  id          String @id @default(cuid())
+  name        String @unique // Navigator | Elevator | Catalyst
+  tagline     String
+  description String
+  order       Int    @default(0) // 0 = Navigator, 1 = Elevator, 2 = Catalyst
+
+  skills Skill[]
+  badges Badge[]
+}
+
+model Skill {
+  id                  String   @id @default(cuid())
+  capabilityAreaId    String
+  levelId             String
+  title               String
+  description         String
+  practicalOutcome    String
+  whyItMatters        String?
+  benefitCategories   String // JSON-encoded array of BenefitCategory values — see src/lib/constants.ts
+  tool                String?
+  estimatedTimeMins   Int?
+  imageUrl            String?
+  videoUrl            String?
+  learningResourceUrl String?
+  evidencePrompt      String?
+  order               Int      @default(0)
+  active              Boolean  @default(true)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  capabilityArea CapabilityArea @relation(fields: [capabilityAreaId], references: [id])
+  level          Level          @relation(fields: [levelId], references: [id])
+
+  statuses   UserSkillStatus[]
+  activities DevelopmentActivity[]
+  evidence   Evidence[]
+  priorities UserPriority[]
+
+  @@index([capabilityAreaId, levelId])
+}
+
+// ---------------------------------------------------------------------------
+// User progress against skills
+// ---------------------------------------------------------------------------
+
+model UserSkillStatus {
+  id         String    @id @default(cuid())
+  userId     String
+  skillId    String
+  status     String // enum: TO_DEVELOP | IN_PROGRESS | MASTERED
+  notes      String?
+  targetDate DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  startedAt  DateTime?
+  masteredAt DateTime?
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skill Skill @relation(fields: [skillId], references: [id])
+
+  @@unique([userId, skillId])
+  @@index([userId, status])
+}
+
+// A lightweight flag letting a user mark a To-Develop skill as a personal
+// priority — used by the recommendation engine (priority #4).
+model UserPriority {
+  id        String   @id @default(cuid())
+  userId    String
+  skillId   String
+  createdAt DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skill Skill @relation(fields: [skillId], references: [id])
+
+  @@unique([userId, skillId])
+}
+
+model DevelopmentActivity {
+  id           String   @id @default(cuid())
+  userId       String
+  skillId      String?
+  activityType String // enum: SKILL_ASSESSED | SKILL_STARTED | SKILL_MASTERED | RESOURCE_COMPLETED | REFLECTION_ADDED | EVIDENCE_ADDED | LEVEL_COMPLETED | MILESTONE_EARNED
+  detail       String? // free-text summary for the activity timeline
+  activityDate DateTime @default(now())
+  createdAt    DateTime @default(now())
+
+  user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skill Skill? @relation(fields: [skillId], references: [id])
+
+  @@index([userId, activityDate])
+}
+
+model UserMomentum {
+  userId                     String    @id
+  currentStreak              Int       @default(0)
+  longestStreak               Int       @default(0)
+  totalDevelopmentDays       Int       @default(0)
+  lastQualifyingActivityDate DateTime?
+  weeklyTarget               Int       @default(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ---------------------------------------------------------------------------
+// Achievements
+// ---------------------------------------------------------------------------
+
+model Badge {
+  id               String  @id @default(cuid())
+  capabilityAreaId String
+  levelId          String
+  name             String
+  description      String
+  image            String?
+  criteria         String // human readable
+
+  capabilityArea CapabilityArea @relation(fields: [capabilityAreaId], references: [id])
+  level          Level          @relation(fields: [levelId], references: [id])
+
+  @@unique([capabilityAreaId, levelId])
+}
+
+model Milestone {
+  id            String  @id @default(cuid())
+  name          String
+  description   String
+  icon          String?
+  criteriaType  String // enum: FIRST_ASSESSMENT | ACTIVE_DAYS_TOTAL | SKILLS_MASTERED_TOTAL | LEVEL_COMPLETED_ANY | LEVEL_COMPLETED_SPECIFIC | ALL_AREAS_STARTED
+  criteriaValue Int? // e.g. 3, 7, 10, 30 (days/skills) — null where not needed
+  active        Boolean @default(true)
+
+  users UserMilestone[]
+}
+
+model UserMilestone {
+  id          String   @id @default(cuid())
+  userId      String
+  milestoneId String
+  earnedAt    DateTime @default(now())
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  milestone Milestone @relation(fields: [milestoneId], references: [id])
+
+  @@unique([userId, milestoneId])
+}
+
+model Evidence {
+  id          String   @id @default(cuid())
+  userId      String
+  skillId     String
+  reflection  String?
+  fileUrl     String?
+  externalUrl String?
+  createdAt   DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skill Skill @relation(fields: [skillId], references: [id])
+}
+
+// ---------------------------------------------------------------------------
+// PedTech facts
+// ---------------------------------------------------------------------------
+
+model PedTechFact {
+  id          String    @id @default(cuid())
+  title       String
+  fact        String
+  category    String // enum: AI | GOOGLE_WORKSPACE | DIGITAL_PEDAGOGY | ACCESSIBILITY | COGNITIVE_SCIENCE | DIGITAL_WELLBEING | ASSESSMENT | IMMERSIVE_LEARNING | PRODUCTIVITY | COLLABORATION
+  source      String?
+  sourceUrl   String?
+  active      Boolean   @default(true)
+  displayDate DateTime?
+  createdAt   DateTime  @default(now())
+}
+
+// ---------------------------------------------------------------------------
+// System configuration (admin-tunable)
+// ---------------------------------------------------------------------------
+
+model SystemConfig {
+  key   String @id
+  value String
+}
