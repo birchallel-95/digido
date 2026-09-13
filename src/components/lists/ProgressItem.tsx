@@ -62,7 +62,7 @@ export function ProgressItem({ item }: { item: StatusListItem }) {
           <Icon name="check" className="h-4 w-4" /> Mark as mastered
         </Button>
         {item.learningResourceUrl && (
-          <a href={item.learningResourceUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-sm text-[var(--color-brand)] hover:underline">
+          <a href={item.learningResourceUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-sm text-[var(--color-brand-text)] hover:underline">
             <Icon name="external" className="h-3.5 w-3.5" /> Learning resource
           </a>
         )}
@@ -85,7 +85,7 @@ export function ProgressItem({ item }: { item: StatusListItem }) {
             onChange={(e) => setReflection(e.target.value)}
             placeholder={item.evidencePrompt ?? "How have you used this so far?"}
             rows={2}
-            className="w-full rounded-xl border border-[var(--color-border)] px-3 py-2 text-sm bg-[var(--color-surface)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand)]"
+            className="w-full rounded-xl border border-[var(--color-border)] px-3 py-2 text-sm bg-[var(--color-surface)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-text)]"
           />
           <div className="flex gap-2 mt-2">
             <Button size="sm" onClick={submitEvidence} disabled={!reflection.trim() || isPending}>

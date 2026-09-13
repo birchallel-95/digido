@@ -28,6 +28,24 @@ export function DailyStepCard({ recommendation }: { recommendation: Recommendati
       {recommendation.whyItMatters && (
         <p className="text-sm text-[var(--color-ink-muted)] mb-3">{recommendation.whyItMatters}</p>
       )}
+      {recommendation.howToSteps.length > 0 && (
+        <div className="rounded-xl bg-[var(--color-surface-sunken)] p-3.5 mb-3">
+          <p className="text-xs font-semibold uppercase tracking-wide text-[var(--color-ink-faint)] mb-2 flex items-center gap-1.5">
+            <Icon name="list-checks" className="h-3.5 w-3.5" />
+            How to do this
+          </p>
+          <ol className="space-y-1.5">
+            {recommendation.howToSteps.map((step, i) => (
+              <li key={i} className="flex gap-2.5 text-sm text-[var(--color-ink)]">
+                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--color-brand-soft)] text-[var(--color-brand-text)] text-xs font-bold">
+                  {i + 1}
+                </span>
+                <span className="pt-px">{step}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
       <p className="text-xs text-[var(--color-ink-faint)] mb-4 italic">{recommendation.reason}</p>
       <div className="flex items-center justify-between gap-3">
         {recommendation.estimatedTimeMins && (

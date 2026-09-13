@@ -17,7 +17,7 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Digital Capability Passport",
+  title: "DigiDo",
   description:
     "Build your digital capability, one practical improvement at a time — a self-paced digital skills companion for college staff.",
 };
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#0f766e",
+  themeColor: "#facc15",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

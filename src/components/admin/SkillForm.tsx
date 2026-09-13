@@ -30,6 +30,7 @@ export function SkillForm({
     description: initial?.description ?? "",
     practicalOutcome: initial?.practicalOutcome ?? "",
     whyItMatters: initial?.whyItMatters ?? "",
+    howToSteps: initial?.howToSteps ?? [],
     benefitCategories: initial?.benefitCategories ?? [],
     tool: initial?.tool ?? "",
     estimatedTimeMins: initial?.estimatedTimeMins,
@@ -38,6 +39,7 @@ export function SkillForm({
     learningResourceUrl: initial?.learningResourceUrl ?? "",
     evidencePrompt: initial?.evidencePrompt ?? "",
   });
+  const [howToText, setHowToText] = useState((initial?.howToSteps ?? []).join("\n"));
   const [saving, setSaving] = useState(false);
 
   function toggleBenefit(cat: BenefitCategory) {
@@ -52,14 +54,19 @@ export function SkillForm({
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
-    if (skillId) await updateSkill(skillId, form);
-    else await createSkill(form);
+    const howToSteps = howToText
+      .split("\n")
+      .map((s) => s.trim())
+      .filter(Boolean);
+    const payload = { ...form, howToSteps };
+    if (skillId) await updateSkill(skillId, payload);
+    else await createSkill(payload);
     router.push("/admin/skills");
     router.refresh();
   }
 
   const inputClass =
-    "w-full rounded-xl border border-[var(--color-border)] px-3.5 py-2.5 text-sm bg-[var(--color-surface)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand)]";
+    "w-full rounded-xl border border-[var(--color-border)] px-3.5 py-2.5 text-sm bg-[var(--color-surface)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-text)]";
   const labelClass = "block text-sm font-medium text-[var(--color-ink)] mb-1.5";
 
   return (
@@ -113,6 +120,20 @@ export function SkillForm({
         <textarea value={form.whyItMatters} onChange={(e) => setForm((f) => ({ ...f, whyItMatters: e.target.value }))} className={inputClass} rows={2} />
       </div>
 
+      <div>
+        <label className={labelClass}>How to do this — one step per line</label>
+        <textarea
+          value={howToText}
+          onChange={(e) => setHowToText(e.target.value)}
+          className={inputClass}
+          rows={4}
+          placeholder={"Open Google Forms and select Blank\nAdd your first question\nClick Send to share the form"}
+        />
+        <p className="mt-1 text-xs text-[var(--color-ink-faint)]">
+          Shown to staff as a numbered checklist wherever this skill appears — the concrete steps, not just the outcome.
+        </p>
+      </div>
+
       <div className="grid sm:grid-cols-2 gap-4">
         <div>
           <label className={labelClass}>Relevant tool (optional)</label>
@@ -143,9 +164,9 @@ export function SkillForm({
                 aria-pressed={selected}
                 className="rounded-full px-3 py-1.5 text-xs font-medium border transition-colors"
                 style={{
-                  borderColor: selected ? "var(--color-brand)" : "var(--color-border)",
+                  borderColor: selected ? "var(--color-brand-text)" : "var(--color-border)",
                   background: selected ? "var(--color-brand-soft)" : "transparent",
-                  color: selected ? "var(--color-brand-dark)" : "var(--color-ink-muted)",
+                  color: selected ? "var(--color-brand-text)" : "var(--color-ink-muted)",
                 }}
               >
                 {BENEFIT_LABELS[cat]}

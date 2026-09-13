@@ -12,6 +12,9 @@ export function DevelopmentItem({ item }: { item: StatusListItem }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [priority, setPriority] = useState(item.isPriority);
+  // Open by default — the whole point is that "how do I do this" is visible
+  // without an extra click, not buried behind a disclosure.
+  const [showSteps, setShowSteps] = useState(true);
 
   function start() {
     startTransition(async () => {
@@ -51,6 +54,34 @@ export function DevelopmentItem({ item }: { item: StatusListItem }) {
         </button>
       </div>
 
+      {item.howToSteps.length > 0 && (
+        <div className="mt-3 rounded-xl bg-[var(--color-surface-sunken)] p-3.5">
+          <button
+            onClick={() => setShowSteps((s) => !s)}
+            className="flex w-full items-center justify-between text-xs font-semibold uppercase tracking-wide text-[var(--color-ink-muted)]"
+            aria-expanded={showSteps}
+          >
+            <span className="flex items-center gap-1.5">
+              <Icon name="list-checks" className="h-3.5 w-3.5" />
+              How to do this
+            </span>
+            <Icon name="chevron" className={`h-3.5 w-3.5 transition-transform ${showSteps ? "rotate-90" : ""}`} />
+          </button>
+          {showSteps && (
+            <ol className="space-y-1.5 mt-2.5">
+              {item.howToSteps.map((step, i) => (
+                <li key={i} className="flex gap-2.5 text-sm text-[var(--color-ink)]">
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--color-brand-soft)] text-[var(--color-brand-text)] text-xs font-bold">
+                    {i + 1}
+                  </span>
+                  <span className="pt-px">{step}</span>
+                </li>
+              ))}
+            </ol>
+          )}
+        </div>
+      )}
+
       <div className="flex flex-wrap items-center gap-3 mt-4">
         <Button size="sm" onClick={start} disabled={isPending}>
           Start this
@@ -60,7 +91,7 @@ export function DevelopmentItem({ item }: { item: StatusListItem }) {
             href={item.learningResourceUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-sm text-[var(--color-brand)] hover:underline"
+            className="inline-flex items-center gap-1 text-sm text-[var(--color-brand-text)] hover:underline"
           >
             <Icon name="external" className="h-3.5 w-3.5" />
             Learning resource

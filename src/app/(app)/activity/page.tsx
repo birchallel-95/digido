@@ -6,9 +6,9 @@ const ACTIVITY_META: Record<string, { icon: string; verb: string; color: string 
   SKILL_MASTERED: { icon: "check", verb: "Mastered", color: "var(--color-success)" },
   SKILL_STARTED: { icon: "arrow-up", verb: "Started", color: "var(--color-elevator)" },
   SKILL_ASSESSED: { icon: "arrow-left", verb: "Added to development list", color: "var(--color-ink-muted)" },
-  RESOURCE_COMPLETED: { icon: "book", verb: "Completed a resource for", color: "var(--color-brand)" },
-  REFLECTION_ADDED: { icon: "edit", verb: "Reflected on", color: "var(--color-brand)" },
-  EVIDENCE_ADDED: { icon: "edit", verb: "Added evidence for", color: "var(--color-brand)" },
+  RESOURCE_COMPLETED: { icon: "book", verb: "Completed a resource for", color: "var(--color-brand-text)" },
+  REFLECTION_ADDED: { icon: "edit", verb: "Reflected on", color: "var(--color-brand-text)" },
+  EVIDENCE_ADDED: { icon: "edit", verb: "Added evidence for", color: "var(--color-brand-text)" },
   LEVEL_COMPLETED: { icon: "trophy", verb: "Completed", color: "var(--color-catalyst)" },
   MILESTONE_EARNED: { icon: "award", verb: "Earned milestone", color: "var(--color-warning)" },
 };

@@ -33,7 +33,7 @@ export default async function CapabilityAreaPage({ params }: { params: Promise<{
 
   return (
     <div className="space-y-6">
-      <Link href="/dashboard" className="inline-flex items-center gap-1.5 text-sm text-[var(--color-ink-muted)] hover:text-[var(--color-brand)]">
+      <Link href="/dashboard" className="inline-flex items-center gap-1.5 text-sm text-[var(--color-ink-muted)] hover:text-[var(--color-brand-text)]">
         <Icon name="arrow-left" className="h-4 w-4" />
         Dashboard
       </Link>

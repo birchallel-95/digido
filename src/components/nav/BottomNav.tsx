@@ -24,7 +24,7 @@ export function BottomNav() {
                 aria-current={active ? "page" : undefined}
                 className={clsx(
                   "flex flex-col items-center gap-1 py-2.5 text-xs font-medium min-h-[52px] justify-center",
-                  active ? "text-[var(--color-brand)]" : "text-[var(--color-ink-faint)]"
+                  active ? "text-[var(--color-brand-text)]" : "text-[var(--color-ink-faint)]"
                 )}
               >
                 <Icon name={link.icon} className="h-5 w-5" />

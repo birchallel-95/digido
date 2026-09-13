@@ -6,7 +6,7 @@ export function NearlyThere({ items }: { items: NearlyThereItem[] }) {
   return (
     <div>
       <div className="flex items-center gap-2 mb-3">
-        <Icon name="target" className="h-4.5 w-4.5 text-[var(--color-brand)]" />
+        <Icon name="target" className="h-4.5 w-4.5 text-[var(--color-brand-text)]" />
         <h2 className="font-display font-bold text-[var(--color-ink)]">Nearly there</h2>
       </div>
       <ul className="space-y-2">

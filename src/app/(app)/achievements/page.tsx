@@ -61,7 +61,7 @@ export default async function AchievementsPage() {
                 className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full"
                 style={{
                   background: m.earned ? "var(--color-brand)" : "var(--color-surface-sunken)",
-                  color: m.earned ? "white" : "var(--color-ink-faint)",
+                  color: m.earned ? "var(--color-ink)" : "var(--color-ink-faint)",
                 }}
               >
                 <Icon name={m.earned ? m.icon ?? "award" : "lock"} className="h-4.5 w-4.5" />
@@ -91,7 +91,7 @@ export default async function AchievementsPage() {
                 </div>
                 <p className="text-sm font-medium text-[var(--color-ink)] leading-snug">{s.title}</p>
                 {s.hasEvidence && (
-                  <span className="inline-flex items-center gap-1 mt-1.5 text-xs text-[var(--color-brand)]">
+                  <span className="inline-flex items-center gap-1 mt-1.5 text-xs text-[var(--color-brand-text)]">
                     <Icon name="edit" className="h-3 w-3" /> Evidence added
                   </span>
                 )}

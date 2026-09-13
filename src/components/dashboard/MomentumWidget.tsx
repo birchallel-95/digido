@@ -28,7 +28,7 @@ export function MomentumWidget({ momentum }: { momentum: MomentumSummary }) {
               className="flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold"
               style={{
                 background: d.active ? "var(--color-brand)" : "var(--color-surface-sunken)",
-                color: d.active ? "white" : "var(--color-ink-faint)",
+                color: d.active ? "var(--color-ink)" : "var(--color-ink-faint)",
               }}
               aria-hidden
             >

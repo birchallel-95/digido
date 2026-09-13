@@ -216,7 +216,7 @@ export function SwipeDeck({
         Swipe, tap a button, or use the arrow keys (← need to learn · ↑ working on it · → I&apos;ve got this).
       </p>
       {current.isPriority && (
-        <p className="text-center text-xs text-[var(--color-brand)] mt-1 font-medium">⭐ You flagged this as a priority</p>
+        <p className="text-center text-xs text-[var(--color-brand-text)] mt-1 font-medium">⭐ You flagged this as a priority</p>
       )}
     </div>
   );

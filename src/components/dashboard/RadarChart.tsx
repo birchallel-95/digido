@@ -62,7 +62,7 @@ export function RadarChart({ areas }: { areas: AreaProgress[] }) {
           const outer = pointFor(i, 100);
           return <line key={i} x1={center} y1={center} x2={outer.x} y2={outer.y} stroke="var(--color-border)" strokeWidth={1} />;
         })}
-        <polygon points={dataPath} fill="var(--color-brand)" fillOpacity={0.18} stroke="var(--color-brand)" strokeWidth={2} />
+        <polygon points={dataPath} fill="var(--color-brand)" fillOpacity={0.35} stroke="var(--color-brand-text)" strokeWidth={2} />
         {dataPoints.map((p, i) => (
           <circle key={i} cx={p.x} cy={p.y} r={4} fill={areas[i].color} stroke="white" strokeWidth={1.5} />
         ))}
@@ -93,7 +93,7 @@ export function RadarChart({ areas }: { areas: AreaProgress[] }) {
       </svg>
 
       <details className="mt-3 group">
-        <summary className="cursor-pointer text-sm font-medium text-[var(--color-brand)] w-fit mx-auto text-center list-none underline underline-offset-2">
+        <summary className="cursor-pointer text-sm font-medium text-[var(--color-brand-text)] w-fit mx-auto text-center list-none underline underline-offset-2">
           View as table
         </summary>
         <div className="mt-3 overflow-x-auto">
@@ -116,7 +116,7 @@ export function RadarChart({ areas }: { areas: AreaProgress[] }) {
               {areas.map((a) => (
                 <tr key={a.areaId} className="border-t border-[var(--color-border)]">
                   <td className="py-2 pr-2">
-                    <Link href={`/areas/${a.areaId}`} className="font-medium text-[var(--color-ink)] hover:text-[var(--color-brand)] hover:underline">
+                    <Link href={`/areas/${a.areaId}`} className="font-medium text-[var(--color-ink)] hover:text-[var(--color-brand-text)] hover:underline">
                       {a.areaName}
                     </Link>
                   </td>

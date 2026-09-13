@@ -16,6 +16,9 @@ const COLUMN_MAP: Record<string, keyof ImportRow> = {
   outcome: "practicalOutcome",
   "practical outcome": "practicalOutcome",
   "why it matters": "whyItMatters",
+  "how to": "howTo",
+  "how to do this": "howTo",
+  instructions: "howTo",
   "benefit category": "benefitCategory",
   tool: "tool",
   "estimated time": "estimatedTimeMins",
@@ -97,8 +100,9 @@ export function ImportWizard({ knownAreas, knownLevels }: { knownAreas: string[]
         <Icon name="upload" className="h-10 w-10 mx-auto text-[var(--color-ink-faint)] mb-3" />
         <p className="font-medium text-[var(--color-ink)] mb-1">Upload a CSV file</p>
         <p className="text-sm text-[var(--color-ink-muted)] mb-4">
-          Expected columns: Capability Area, Level, Skill, Description, Outcome, Why It Matters, Benefit Category,
-          Tool, Estimated Time, Resource URL, Image URL, Video URL.
+          Expected columns: Capability Area, Level, Skill, Description, Outcome, Why It Matters, How To (steps
+          separated by a line break or &quot; | &quot;), Benefit Category, Tool, Estimated Time, Resource URL, Image
+          URL, Video URL.
         </p>
         <label className="inline-block">
           <input
@@ -110,7 +114,7 @@ export function ImportWizard({ knownAreas, knownLevels }: { knownAreas: string[]
               if (file) handleFile(file);
             }}
           />
-          <span className="inline-flex items-center rounded-xl bg-[var(--color-brand)] text-white px-4 py-2.5 text-sm font-medium cursor-pointer hover:bg-[var(--color-brand-dark)]">
+          <span className="inline-flex items-center rounded-xl bg-[var(--color-brand)] text-[var(--color-ink)] px-4 py-2.5 text-sm font-semibold cursor-pointer hover:bg-[var(--color-brand-hover)]">
             Choose file
           </span>
         </label>

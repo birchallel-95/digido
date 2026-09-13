@@ -15,10 +15,10 @@ export function Sidebar({ isAdmin, userName }: { isAdmin: boolean; userName: str
     <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:shrink-0 border-r border-[var(--color-border)] bg-[var(--color-surface-raised)] h-screen sticky top-0">
       <div className="px-6 py-6">
         <Link href="/dashboard" className="flex items-center gap-2 font-display font-bold text-lg text-[var(--color-ink)]">
-          <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[var(--color-brand)] text-white">
+          <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[var(--color-brand)] text-[var(--color-ink)]">
             <Icon name="compass" className="h-4.5 w-4.5" />
           </span>
-          Digital Passport
+          DigiDo
         </Link>
       </div>
       <nav className="flex-1 px-3 space-y-1" aria-label="Main navigation">
@@ -32,7 +32,7 @@ export function Sidebar({ isAdmin, userName }: { isAdmin: boolean; userName: str
               className={clsx(
                 "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
                 active
-                  ? "bg-[var(--color-brand-soft)] text-[var(--color-brand-dark)]"
+                  ? "bg-[var(--color-brand-soft)] text-[var(--color-brand-text)]"
                   : "text-[var(--color-ink-muted)] hover:bg-[var(--color-surface-sunken)] hover:text-[var(--color-ink)]"
               )}
             >

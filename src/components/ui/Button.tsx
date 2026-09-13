@@ -6,7 +6,9 @@ type Variant = "primary" | "secondary" | "ghost" | "danger" | "outline";
 type Size = "sm" | "md" | "lg";
 
 const variantClasses: Record<Variant, string> = {
-  primary: "bg-[var(--color-brand)] text-white hover:bg-[var(--color-brand-dark)] shadow-sm",
+  // Dark ink text on the brand yellow (not white) — that's what keeps a
+  // vibrant yellow button accessible.
+  primary: "bg-[var(--color-brand)] text-[var(--color-ink)] hover:bg-[var(--color-brand-hover)] shadow-sm font-semibold",
   secondary: "bg-[var(--color-surface-sunken)] text-[var(--color-ink)] hover:bg-[var(--color-border)]",
   outline: "border border-[var(--color-border)] bg-[var(--color-surface-raised)] hover:bg-[var(--color-surface-sunken)]",
   ghost: "bg-transparent hover:bg-[var(--color-surface-sunken)] text-[var(--color-ink)]",

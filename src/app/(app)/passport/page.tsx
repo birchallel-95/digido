@@ -86,7 +86,7 @@ export default async function PassportPage() {
             <h2 className="font-display font-bold text-[var(--color-ink)] mb-4">Pathway badges earned</h2>
             <div className="flex flex-wrap gap-2">
               {earnedBadges.map((b) => (
-                <span key={b.id} className="inline-flex items-center gap-1.5 rounded-full bg-[var(--color-brand-soft)] text-[var(--color-brand-dark)] px-3 py-1.5 text-sm font-medium">
+                <span key={b.id} className="inline-flex items-center gap-1.5 rounded-full bg-[var(--color-brand-soft)] text-[var(--color-brand-text)] px-3 py-1.5 text-sm font-medium">
                   🏆 {b.name}
                 </span>
               ))}
@@ -124,7 +124,7 @@ export default async function PassportPage() {
                   <p className="text-sm font-semibold text-[var(--color-ink)]">{e.skill.title}</p>
                   {e.reflection && <p className="text-sm text-[var(--color-ink-muted)] mt-1">{e.reflection}</p>}
                   {e.externalUrl && (
-                    <a href={e.externalUrl} target="_blank" rel="noopener noreferrer" className="text-sm text-[var(--color-brand)] hover:underline inline-flex items-center gap-1 mt-1">
+                    <a href={e.externalUrl} target="_blank" rel="noopener noreferrer" className="text-sm text-[var(--color-brand-text)] hover:underline inline-flex items-center gap-1 mt-1">
                       <Icon name="external" className="h-3.5 w-3.5" /> Linked evidence
                     </a>
                   )}

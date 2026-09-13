@@ -17,10 +17,10 @@ export default function LandingPage() {
     <div className="min-h-screen bg-[var(--color-surface)]">
       <header className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-6 flex items-center justify-between">
         <div className="flex items-center gap-2 font-display font-bold text-lg">
-          <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[var(--color-brand)] text-white">
+          <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[var(--color-brand)] text-[var(--color-ink)]">
             <Icon name="compass" className="h-4.5 w-4.5" />
           </span>
-          Digital Capability Passport
+          DigiDo
         </div>
         <nav className="flex items-center gap-3">
           <Link href="/login" className="text-sm font-medium text-[var(--color-ink-muted)] hover:text-[var(--color-ink)] px-3 py-2">
@@ -34,7 +34,7 @@ export default function LandingPage() {
 
       <section className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 pt-10 pb-16 sm:pt-16 sm:pb-24 grid lg:grid-cols-2 gap-12 items-center">
         <div>
-          <span className="inline-flex items-center rounded-full bg-[var(--color-brand-soft)] text-[var(--color-brand-dark)] px-3 py-1 text-xs font-semibold mb-5">
+          <span className="inline-flex items-center rounded-full bg-[var(--color-brand-soft)] text-[var(--color-brand-text)] px-3 py-1 text-xs font-semibold mb-5">
             For Further Education staff
           </span>
           <h1 className="font-display text-4xl sm:text-5xl font-extrabold tracking-tight text-[var(--color-ink)] leading-[1.1]">
@@ -83,10 +83,10 @@ export default function LandingPage() {
               Quick digital checks can help identify misconceptions before learners leave a session.
             </p>
             <div className="flex flex-wrap gap-1.5 mb-6">
-              <span className="rounded-full bg-[var(--color-brand-soft)] text-[var(--color-brand-dark)] px-2.5 py-1 text-xs font-medium">
+              <span className="rounded-full bg-[var(--color-brand-soft)] text-[var(--color-brand-text)] px-2.5 py-1 text-xs font-medium">
                 Assessment
               </span>
-              <span className="rounded-full bg-[var(--color-brand-soft)] text-[var(--color-brand-dark)] px-2.5 py-1 text-xs font-medium">
+              <span className="rounded-full bg-[var(--color-brand-soft)] text-[var(--color-brand-text)] px-2.5 py-1 text-xs font-medium">
                 Time saving
               </span>
             </div>
@@ -139,7 +139,7 @@ export default function LandingPage() {
           { icon: "award", title: "A record that grows with you", body: "Your Digital Capability Passport builds a genuine, evidence-backed professional record over time." },
         ].map((f) => (
           <div key={f.title}>
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--color-brand-soft)] text-[var(--color-brand)] mb-4">
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--color-brand-soft)] text-[var(--color-brand-text)] mb-4">
               <Icon name={f.icon} className="h-5 w-5" />
             </span>
             <h3 className="font-display font-bold text-lg text-[var(--color-ink)] mb-1.5">{f.title}</h3>
@@ -150,7 +150,7 @@ export default function LandingPage() {
 
       <footer className="border-t border-[var(--color-border)] py-8">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 text-sm text-[var(--color-ink-faint)] flex flex-col sm:flex-row justify-between gap-2">
-          <span>Digital Capability Passport — a development tool, not a performance record.</span>
+          <span>DigiDo — a development tool, not a performance record.</span>
           <span>Built for Further Education staff.</span>
         </div>
       </footer>

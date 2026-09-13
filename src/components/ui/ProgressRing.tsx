@@ -2,7 +2,7 @@ export function ProgressRing({
   percent,
   size = 64,
   strokeWidth = 6,
-  color = "var(--color-brand)",
+  color = "var(--color-brand-text)",
   trackColor = "var(--color-surface-sunken)",
   label,
 }: {

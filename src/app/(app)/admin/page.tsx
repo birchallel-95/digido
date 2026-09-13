@@ -27,7 +27,7 @@ export default async function AdminOverviewPage() {
           <Link key={item.href} href={item.href}>
             <Card className="h-full hover:shadow-[var(--shadow-raised)] transition-shadow">
               <CardBody className="pt-5">
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--color-brand-soft)] text-[var(--color-brand)] mb-3">
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--color-brand-soft)] text-[var(--color-brand-text)] mb-3">
                   <Icon name={item.icon} className="h-5 w-5" />
                 </span>
                 <h2 className="font-semibold text-[var(--color-ink)]">{item.title}</h2>

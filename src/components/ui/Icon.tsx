@@ -41,6 +41,7 @@ import {
   ShieldCheck,
   Info,
   ExternalLink,
+  ListChecks,
   type LucideIcon,
 } from "lucide-react";
 
@@ -89,6 +90,7 @@ export const ICONS: Record<string, LucideIcon> = {
   info: Info,
   external: ExternalLink,
   chevron: ChevronRight,
+  "list-checks": ListChecks,
 };
 
 export function Icon({

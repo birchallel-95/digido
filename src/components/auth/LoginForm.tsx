@@ -64,7 +64,7 @@ export function LoginForm({ googleEnabled }: { googleEnabled: boolean }) {
             autoComplete="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded-xl border border-[var(--color-border)] px-3.5 py-2.5 text-sm bg-[var(--color-surface)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand)]"
+            className="w-full rounded-xl border border-[var(--color-border)] px-3.5 py-2.5 text-sm bg-[var(--color-surface)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-text)]"
           />
         </div>
         <div>
@@ -78,7 +78,7 @@ export function LoginForm({ googleEnabled }: { googleEnabled: boolean }) {
             autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-xl border border-[var(--color-border)] px-3.5 py-2.5 text-sm bg-[var(--color-surface)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand)]"
+            className="w-full rounded-xl border border-[var(--color-border)] px-3.5 py-2.5 text-sm bg-[var(--color-surface)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-text)]"
           />
         </div>
         {error && (
@@ -93,7 +93,7 @@ export function LoginForm({ googleEnabled }: { googleEnabled: boolean }) {
 
       <p className="mt-6 text-sm text-center text-[var(--color-ink-muted)]">
         New here?{" "}
-        <a href="/register" className="font-medium text-[var(--color-brand)] hover:underline">
+        <a href="/register" className="font-medium text-[var(--color-brand-text)] hover:underline">
           Create an account
         </a>
       </p>

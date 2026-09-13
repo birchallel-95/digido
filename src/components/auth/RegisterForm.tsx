@@ -64,7 +64,7 @@ export function RegisterForm({ googleEnabled }: { googleEnabled: boolean }) {
             required
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full rounded-xl border border-[var(--color-border)] px-3.5 py-2.5 text-sm bg-[var(--color-surface)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand)]"
+            className="w-full rounded-xl border border-[var(--color-border)] px-3.5 py-2.5 text-sm bg-[var(--color-surface)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-text)]"
           />
         </div>
         <div>
@@ -77,7 +77,7 @@ export function RegisterForm({ googleEnabled }: { googleEnabled: boolean }) {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded-xl border border-[var(--color-border)] px-3.5 py-2.5 text-sm bg-[var(--color-surface)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand)]"
+            className="w-full rounded-xl border border-[var(--color-border)] px-3.5 py-2.5 text-sm bg-[var(--color-surface)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-text)]"
           />
         </div>
         <div>
@@ -88,7 +88,7 @@ export function RegisterForm({ googleEnabled }: { googleEnabled: boolean }) {
             id="department"
             value={department}
             onChange={(e) => setDepartment(e.target.value)}
-            className="w-full rounded-xl border border-[var(--color-border)] px-3.5 py-2.5 text-sm bg-[var(--color-surface)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand)]"
+            className="w-full rounded-xl border border-[var(--color-border)] px-3.5 py-2.5 text-sm bg-[var(--color-surface)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-text)]"
           />
         </div>
         <div>
@@ -103,7 +103,7 @@ export function RegisterForm({ googleEnabled }: { googleEnabled: boolean }) {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             aria-describedby="password-hint"
-            className="w-full rounded-xl border border-[var(--color-border)] px-3.5 py-2.5 text-sm bg-[var(--color-surface)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand)]"
+            className="w-full rounded-xl border border-[var(--color-border)] px-3.5 py-2.5 text-sm bg-[var(--color-surface)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-text)]"
           />
           <p id="password-hint" className="mt-1 text-xs text-[var(--color-ink-faint)]">
             At least 8 characters.
@@ -121,7 +121,7 @@ export function RegisterForm({ googleEnabled }: { googleEnabled: boolean }) {
 
       <p className="mt-6 text-sm text-center text-[var(--color-ink-muted)]">
         Already have an account?{" "}
-        <a href="/login" className="font-medium text-[var(--color-brand)] hover:underline">
+        <a href="/login" className="font-medium text-[var(--color-brand-text)] hover:underline">
           Sign in
         </a>
       </p>

@@ -7,6 +7,7 @@ export interface StatusListItem {
   title: string;
   description: string;
   practicalOutcome: string;
+  howToSteps: string[];
   areaId: string;
   areaName: string;
   areaColor: string;
@@ -37,6 +38,7 @@ export async function getSkillsByStatus(userId: string, status: SkillStatusValue
     title: r.skill.title,
     description: r.skill.description,
     practicalOutcome: r.skill.practicalOutcome,
+    howToSteps: JSON.parse(r.skill.howToSteps || "[]"),
     areaId: r.skill.capabilityAreaId,
     areaName: r.skill.capabilityArea.name,
     areaColor: r.skill.capabilityArea.color,

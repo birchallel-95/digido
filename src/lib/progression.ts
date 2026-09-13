@@ -130,6 +130,7 @@ export async function getSkillsForAreaLevel(
     description: s.description,
     practicalOutcome: s.practicalOutcome,
     whyItMatters: s.whyItMatters,
+    howToSteps: JSON.parse(s.howToSteps || "[]"),
     benefitCategories: JSON.parse(s.benefitCategories || "[]"),
     tool: s.tool,
     estimatedTimeMins: s.estimatedTimeMins,

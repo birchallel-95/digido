@@ -127,6 +127,7 @@ function buildResult(
     whyItMatters: string | null;
     practicalOutcome: string;
     estimatedTimeMins: number | null;
+    howToSteps: string | null;
     capabilityAreaId: string;
     capabilityArea: { name: string; color: string };
     level: { name: string };
@@ -143,6 +144,7 @@ function buildResult(
     title: skill.title,
     whyItMatters: skill.whyItMatters,
     practicalOutcome: skill.practicalOutcome,
+    howToSteps: JSON.parse(skill.howToSteps || "[]"),
     estimatedTimeMins: skill.estimatedTimeMins,
     reason,
     reasonRank,

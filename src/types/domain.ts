@@ -6,6 +6,7 @@ export interface SkillWithStatus {
   description: string;
   practicalOutcome: string;
   whyItMatters: string | null;
+  howToSteps: string[];
   benefitCategories: string[];
   tool: string | null;
   estimatedTimeMins: number | null;
@@ -66,6 +67,7 @@ export interface RecommendationResult {
   title: string;
   whyItMatters: string | null;
   practicalOutcome: string;
+  howToSteps: string[];
   estimatedTimeMins: number | null;
   reason: string; // human-readable "why we suggested this"
   reasonRank: number; // 1-6, matches priority order in the brief

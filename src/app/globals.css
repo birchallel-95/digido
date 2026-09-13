@@ -13,11 +13,17 @@
   --color-ink-muted: #6b6862;
   --color-ink-faint: #9c988f;
 
-  /* Brand */
-  --color-brand: #0f766e;
-  --color-brand-dark: #0b5c56;
-  --color-brand-light: #ccfbf1;
-  --color-brand-soft: #f0fdfa;
+  /* Brand — a warm, inviting yellow/gold. Solid brand backgrounds (buttons,
+     badges, progress bars) always pair with dark ink foreground content,
+     never white — that's what keeps a bright yellow accessible. Brand TEXT
+     (links, active nav labels, icons on light backgrounds) uses the darker
+     --color-brand-text instead of raw --color-brand, since the vibrant
+     yellow itself is too light to read reliably as text on a pale surface. */
+  --color-brand: #facc15;
+  --color-brand-hover: #eab308;
+  --color-brand-text: #854d0e;
+  --color-brand-light: #fde68a;
+  --color-brand-soft: #fefce8;
 
   /* Level identity — colour AND shape/icon differentiate (WCAG) */
   --color-navigator: #2563eb;
@@ -27,11 +33,11 @@
   --color-catalyst: #db2777;
   --color-catalyst-soft: #fdf2f8;
 
-  /* Status */
+  /* Status — kept distinct from the brand yellow so alerts don't blend in */
   --color-success: #15803d;
   --color-success-soft: #f0fdf4;
-  --color-warning: #b45309;
-  --color-warning-soft: #fffbeb;
+  --color-warning: #ea580c;
+  --color-warning-soft: #fff7ed;
   --color-danger: #b91c1c;
 
   --radius-card: 1.25rem;
@@ -64,9 +70,11 @@ h1, h2, h3, h4, .font-display {
   font-family: var(--font-display), var(--font-sans), ui-sans-serif, sans-serif;
 }
 
-/* Strong, visible focus states everywhere (WCAG 2.2 AA) */
+/* Strong, visible focus states everywhere (WCAG 2.2 AA). Uses the darker
+   --color-brand-text rather than the raw brand yellow — a yellow outline on
+   a pale card background is barely visible and fails non-text contrast. */
 :focus-visible {
-  outline: 2.5px solid var(--color-brand);
+  outline: 2.5px solid var(--color-brand-text);
   outline-offset: 2px;
   border-radius: 4px;
 }
@@ -103,5 +111,5 @@ h1, h2, h3, h4, .font-display {
 
 ::selection {
   background: var(--color-brand-light);
-  color: var(--color-brand-dark);
+  color: var(--color-brand-text);
 }

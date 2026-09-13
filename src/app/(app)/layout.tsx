@@ -12,7 +12,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     <div className="flex min-h-screen bg-[var(--color-surface)]">
       <a
         href="#main-content"
-        className="sr-only-focusable fixed top-2 left-2 z-50 rounded-lg bg-[var(--color-brand)] text-white px-4 py-2 text-sm font-medium"
+        className="sr-only-focusable fixed top-2 left-2 z-50 rounded-lg bg-[var(--color-brand)] text-[var(--color-ink)] px-4 py-2 text-sm font-medium"
       >
         Skip to main content
       </a>

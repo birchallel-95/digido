@@ -20,7 +20,7 @@ export function PedTechManager({ facts }: { facts: Fact[] }) {
   const [saving, setSaving] = useState(false);
 
   const inputClass =
-    "w-full rounded-xl border border-[var(--color-border)] px-3.5 py-2.5 text-sm bg-[var(--color-surface)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand)]";
+    "w-full rounded-xl border border-[var(--color-border)] px-3.5 py-2.5 text-sm bg-[var(--color-surface)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-text)]";
 
   function edit(f: Fact) {
     setEditingId(f.id);
@@ -99,7 +99,7 @@ export function PedTechManager({ facts }: { facts: Fact[] }) {
         {facts.map((f) => (
           <div key={f.id} className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-raised)] p-4 flex items-start justify-between gap-4">
             <div>
-              <p className="text-xs font-medium text-[var(--color-brand)] uppercase tracking-wide">{f.category.replaceAll("_", " ")}</p>
+              <p className="text-xs font-medium text-[var(--color-brand-text)] uppercase tracking-wide">{f.category.replaceAll("_", " ")}</p>
               <p className="font-semibold text-[var(--color-ink)]">{f.title}</p>
               <p className="text-sm text-[var(--color-ink-muted)] mt-1">{f.fact}</p>
               {!f.active && <p className="text-xs text-[var(--color-ink-faint)] mt-1">Inactive</p>}

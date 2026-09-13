@@ -20,13 +20,32 @@ export function SkillCard({ skill }: { skill: SkillWithStatus }) {
       <p className="text-[var(--color-ink-muted)] mb-4">{skill.description}</p>
 
       <div className="rounded-2xl bg-[var(--color-brand-soft)] p-4 mb-4">
-        <p className="text-xs font-semibold uppercase tracking-wide text-[var(--color-brand-dark)] mb-1">What this lets you do</p>
+        <p className="text-xs font-semibold uppercase tracking-wide text-[var(--color-brand-text)] mb-1">What this lets you do</p>
         <p className="text-sm text-[var(--color-ink)]">{skill.practicalOutcome}</p>
       </div>
 
+      {skill.howToSteps.length > 0 && (
+        <div className="rounded-2xl border border-[var(--color-border)] p-4 mb-4">
+          <p className="text-xs font-semibold uppercase tracking-wide text-[var(--color-ink-faint)] mb-2.5 flex items-center gap-1.5">
+            <Icon name="list-checks" className="h-3.5 w-3.5" />
+            How to do this
+          </p>
+          <ol className="space-y-2">
+            {skill.howToSteps.map((step, i) => (
+              <li key={i} className="flex gap-2.5 text-sm text-[var(--color-ink)]">
+                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--color-brand-soft)] text-[var(--color-brand-text)] text-xs font-bold">
+                  {i + 1}
+                </span>
+                <span className="pt-px">{step}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
+
       {skill.whyItMatters && (
         <details className="mb-4 group">
-          <summary className="cursor-pointer text-sm font-medium text-[var(--color-ink-muted)] hover:text-[var(--color-brand)] flex items-center gap-1.5">
+          <summary className="cursor-pointer text-sm font-medium text-[var(--color-ink-muted)] hover:text-[var(--color-brand-text)] flex items-center gap-1.5">
             <Icon name="info" className="h-4 w-4" />
             Why this matters
           </summary>
@@ -54,7 +73,7 @@ export function SkillCard({ skill }: { skill: SkillWithStatus }) {
             href={skill.learningResourceUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-[var(--color-brand)] hover:underline"
+            className="inline-flex items-center gap-1 text-[var(--color-brand-text)] hover:underline"
             onClick={(e) => e.stopPropagation()}
           >
             <Icon name="external" className="h-3.5 w-3.5" />

@@ -32,6 +32,7 @@ export default async function EditSkillPage({ params }: { params: Promise<{ id: 
           description: skill.description,
           practicalOutcome: skill.practicalOutcome,
           whyItMatters: skill.whyItMatters ?? "",
+          howToSteps: JSON.parse(skill.howToSteps || "[]") as string[],
           benefitCategories: JSON.parse(skill.benefitCategories || "[]") as BenefitCategory[],
           tool: skill.tool ?? "",
           estimatedTimeMins: skill.estimatedTimeMins ?? undefined,

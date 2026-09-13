@@ -56,7 +56,7 @@ export function JourneyPath({
                   title={skill.title}
                 >
                   <span
-                    className="flex h-9 w-9 items-center justify-center rounded-full border-2 transition-transform group-hover:scale-105 group-focus-visible:ring-2 group-focus-visible:ring-[var(--color-brand)]"
+                    className="flex h-9 w-9 items-center justify-center rounded-full border-2 transition-transform group-hover:scale-105 group-focus-visible:ring-2 group-focus-visible:ring-[var(--color-brand-text)]"
                     style={{
                       background: style.bg,
                       color: style.fg,

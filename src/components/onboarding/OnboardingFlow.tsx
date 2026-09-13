@@ -62,7 +62,7 @@ export function OnboardingFlow() {
             >
               {STEPS[step] === "welcome" && (
                 <div className="text-center">
-                  <span className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--color-brand-soft)] text-[var(--color-brand)]">
+                  <span className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--color-brand-soft)] text-[var(--color-brand-text)]">
                     <Icon name="compass" className="h-8 w-8" />
                   </span>
                   <h1 className="font-display text-2xl sm:text-3xl font-bold text-[var(--color-ink)] mb-3">

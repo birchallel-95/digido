@@ -1,8 +1,10 @@
-# Digital Capability Passport
+# DigiDo
 
 A swipe-based digital capability development platform for Further Education
 college staff, built around the principle: **"Build your digital capability,
-one practical improvement at a time."**
+one practical improvement at a time."** ("Digital Capability Passport" is
+the name of the in-app CPD record feature — see `/passport` — not the app
+itself, which is called DigiDo.)
 
 ## Quick start
 
@@ -49,6 +51,19 @@ Open http://localhost:3000.
 - **CSV import via PapaParse**, client-side parse → preview → validate →
   confirm → server action. XLSX import was called out as "ideally" in the
   brief but not implemented — CSV (the required format) is fully built.
+- **Every skill carries a `howToSteps` array** — concrete, numbered
+  instructions ("how do I actually do this?"), shown on the swipe card, in
+  My Development, and on the dashboard's Today's Digital Step — not just the
+  outcome/benefit copy. Admins edit it as one step per line in the skill form;
+  CSV import accepts an optional "How To" column (steps separated by a line
+  break or `|`).
+- **Colour system is a warm yellow/gold, not the initial teal.** Solid brand
+  backgrounds (buttons, badges, progress fills) always pair with dark ink
+  foreground content, never white — a vibrant yellow with white text or icons
+  fails contrast. Actual brand-coloured *text* (links, active nav labels,
+  icons on a pale background) uses the separate, darker `--color-brand-text`
+  token instead of the raw brand yellow, which is too light to read reliably
+  as text. See the tokens and comments at the top of `globals.css`.
 
 ## Where things live
 

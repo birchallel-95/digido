@@ -115,6 +115,7 @@ model Skill {
   description         String
   practicalOutcome    String
   whyItMatters        String?
+  howToSteps          String? // JSON-encoded array of short instructional steps — "how do I actually do this?"
   benefitCategories   String // JSON-encoded array of BenefitCategory values — see src/lib/constants.ts
   tool                String?
   estimatedTimeMins   Int?

@@ -86,7 +86,7 @@ export default async function DashboardPage() {
         <Card>
           <CardBody className="pt-5">
             <div className="flex items-center gap-2 mb-4">
-              <Icon name="chart" className="h-4.5 w-4.5 text-[var(--color-brand)]" />
+              <Icon name="chart" className="h-4.5 w-4.5 text-[var(--color-brand-text)]" />
               <h2 className="font-display font-bold text-[var(--color-ink)]">My Digital Week</h2>
             </div>
             <ul className="space-y-2.5 text-sm">

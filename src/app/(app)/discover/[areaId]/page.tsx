@@ -27,7 +27,7 @@ export default async function AreaDiscoverPage({
 
   return (
     <div>
-      <Link href="/discover" className="inline-flex items-center gap-1.5 text-sm text-[var(--color-ink-muted)] hover:text-[var(--color-brand)] mb-6">
+      <Link href="/discover" className="inline-flex items-center gap-1.5 text-sm text-[var(--color-ink-muted)] hover:text-[var(--color-brand-text)] mb-6">
         <Icon name="arrow-left" className="h-4 w-4" />
         All areas
       </Link>

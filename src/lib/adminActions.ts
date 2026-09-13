@@ -12,6 +12,7 @@ export interface SkillFormInput {
   description: string;
   practicalOutcome: string;
   whyItMatters?: string;
+  howToSteps: string[];
   benefitCategories: BenefitCategory[];
   tool?: string;
   estimatedTimeMins?: number;
@@ -29,6 +30,7 @@ export async function createSkill(input: SkillFormInput) {
     data: {
       ...input,
       benefitCategories: JSON.stringify(input.benefitCategories ?? []),
+      howToSteps: JSON.stringify(input.howToSteps ?? []),
       active: input.active ?? true,
     },
   });
@@ -43,6 +45,7 @@ export async function updateSkill(id: string, input: SkillFormInput) {
     data: {
       ...input,
       benefitCategories: JSON.stringify(input.benefitCategories ?? []),
+      howToSteps: JSON.stringify(input.howToSteps ?? []),
     },
   });
   revalidatePath("/admin/skills");
@@ -142,6 +145,7 @@ export interface ImportRow {
   description: string;
   practicalOutcome: string;
   whyItMatters?: string;
+  howTo?: string; // steps separated by " | " or newlines
   benefitCategory?: string;
   tool?: string;
   estimatedTimeMins?: number;
@@ -185,6 +189,12 @@ export async function importSkillRows(rows: ImportRow[]): Promise<ImportRowResul
         description: row.description?.trim() || row.title.trim(),
         practicalOutcome: row.practicalOutcome?.trim() || "",
         whyItMatters: row.whyItMatters?.trim() || null,
+        howToSteps: JSON.stringify(
+          row.howTo
+            ?.split(/\r?\n|\s*\|\s*/)
+            .map((s) => s.trim())
+            .filter(Boolean) ?? []
+        ),
         benefitCategories: JSON.stringify(row.benefitCategory ? [row.benefitCategory.trim().toUpperCase().replace(/\s+/g, "_")] : []),
         tool: row.tool?.trim() || null,
         estimatedTimeMins: row.estimatedTimeMins ?? null,

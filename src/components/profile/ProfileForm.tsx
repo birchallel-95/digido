@@ -61,7 +61,7 @@ export function ProfileForm({
                 id="name"
                 value={form.name}
                 onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-                className="w-full rounded-xl border border-[var(--color-border)] px-3.5 py-2.5 text-sm bg-[var(--color-surface)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand)]"
+                className="w-full rounded-xl border border-[var(--color-border)] px-3.5 py-2.5 text-sm bg-[var(--color-surface)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-text)]"
               />
             </div>
             <div>
@@ -72,7 +72,7 @@ export function ProfileForm({
                 id="jobTitle"
                 value={form.jobTitle}
                 onChange={(e) => setForm((f) => ({ ...f, jobTitle: e.target.value }))}
-                className="w-full rounded-xl border border-[var(--color-border)] px-3.5 py-2.5 text-sm bg-[var(--color-surface)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand)]"
+                className="w-full rounded-xl border border-[var(--color-border)] px-3.5 py-2.5 text-sm bg-[var(--color-surface)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-text)]"
               />
             </div>
             <div>
@@ -83,7 +83,7 @@ export function ProfileForm({
                 id="department"
                 value={form.department}
                 onChange={(e) => setForm((f) => ({ ...f, department: e.target.value }))}
-                className="w-full rounded-xl border border-[var(--color-border)] px-3.5 py-2.5 text-sm bg-[var(--color-surface)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand)]"
+                className="w-full rounded-xl border border-[var(--color-border)] px-3.5 py-2.5 text-sm bg-[var(--color-surface)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-text)]"
               />
             </div>
             <div className="flex items-center gap-3">
@@ -110,7 +110,7 @@ export function ProfileForm({
                 style={{
                   borderColor: target === n ? "var(--color-brand)" : "var(--color-border)",
                   background: target === n ? "var(--color-brand)" : "var(--color-surface-raised)",
-                  color: target === n ? "white" : "var(--color-ink)",
+                  color: "var(--color-ink)",
                 }}
               >
                 {n}
