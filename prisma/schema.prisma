@@ -30,6 +30,7 @@ model User {
   department    String?
   jobTitle      String?
   onboarded     Boolean   @default(false)
+  platformPreference String @default("BOTH") // enum: GOOGLE | MICROSOFT | BOTH — set during onboarding, changeable later in Profile
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   lastLogin     DateTime?
@@ -116,6 +117,7 @@ model Skill {
   practicalOutcome    String
   whyItMatters        String?
   howToSteps          String? // JSON-encoded array of short instructional steps — "how do I actually do this?"
+  platform            String   @default("BOTH") // enum: GOOGLE | MICROSOFT | BOTH — which suite this skill's tool/steps are written for
   benefitCategories   String // JSON-encoded array of BenefitCategory values — see src/lib/constants.ts
   tool                String?
   estimatedTimeMins   Int?

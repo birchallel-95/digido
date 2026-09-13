@@ -2,9 +2,17 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { updateProfile, updateWeeklyTarget } from "@/lib/profileActions";
+import { updateProfile, updateWeeklyTarget, updatePlatformPreference } from "@/lib/profileActions";
 import { Button } from "@/components/ui/Button";
 import { Card, CardBody } from "@/components/ui/Card";
+import { Icon } from "@/components/ui/Icon";
+import { PLATFORM_LABELS, type PlatformPreference } from "@/lib/constants";
+
+const PLATFORM_OPTIONS: { value: PlatformPreference; icon: string }[] = [
+  { value: "GOOGLE", icon: "cloud" },
+  { value: "MICROSOFT", icon: "building" },
+  { value: "BOTH", icon: "layers" },
+];
 
 export function ProfileForm({
   name,
@@ -12,18 +20,30 @@ export function ProfileForm({
   department,
   jobTitle,
   weeklyTarget,
+  platformPreference,
 }: {
   name: string;
   email: string;
   department: string;
   jobTitle: string;
   weeklyTarget: number;
+  platformPreference: PlatformPreference;
 }) {
   const router = useRouter();
   const [form, setForm] = useState({ name, department, jobTitle });
   const [target, setTarget] = useState(weeklyTarget);
+  const [platform, setPlatform] = useState(platformPreference);
   const [savedProfile, setSavedProfile] = useState(false);
   const [savedTarget, setSavedTarget] = useState(false);
+  const [savedPlatform, setSavedPlatform] = useState(false);
+
+  async function savePlatform(value: PlatformPreference) {
+    setPlatform(value);
+    await updatePlatformPreference(value);
+    setSavedPlatform(true);
+    router.refresh();
+    setTimeout(() => setSavedPlatform(false), 2000);
+  }
 
   async function saveProfile(e: React.FormEvent) {
     e.preventDefault();
@@ -91,6 +111,41 @@ export function ProfileForm({
               {savedProfile && <span className="text-sm text-[var(--color-success)]">Saved</span>}
             </div>
           </form>
+        </CardBody>
+      </Card>
+
+      <Card>
+        <CardBody className="pt-5">
+          <h2 className="font-display font-bold text-[var(--color-ink)] mb-1">Digital platform</h2>
+          <p className="text-sm text-[var(--color-ink-muted)] mb-4">
+            Skills, examples and step-by-step instructions are tailored to whichever platform your college uses.
+          </p>
+          <div className="grid sm:grid-cols-3 gap-2">
+            {PLATFORM_OPTIONS.map((opt) => {
+              const selected = platform === opt.value;
+              return (
+                <button
+                  key={opt.value}
+                  onClick={() => savePlatform(opt.value)}
+                  aria-pressed={selected}
+                  className="rounded-xl border-2 p-3 flex items-center gap-2.5 text-left transition-colors"
+                  style={{ borderColor: selected ? "var(--color-brand)" : "var(--color-border)" }}
+                >
+                  <span
+                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
+                    style={{
+                      background: selected ? "var(--color-brand)" : "var(--color-surface-sunken)",
+                      color: "var(--color-ink)",
+                    }}
+                  >
+                    <Icon name={opt.icon} className="h-4 w-4" />
+                  </span>
+                  <span className="text-sm font-medium text-[var(--color-ink)]">{PLATFORM_LABELS[opt.value]}</span>
+                </button>
+              );
+            })}
+          </div>
+          {savedPlatform && <span className="text-sm text-[var(--color-success)] mt-2 inline-block">Saved</span>}
         </CardBody>
       </Card>
 

@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { computeUserProgress } from "@/lib/progression";
-import type { LevelName } from "@/lib/constants";
+import { getUserPlatform, platformWhere } from "@/lib/platform";
+import type { LevelName, PlatformPreference } from "@/lib/constants";
 import type { RecommendationResult } from "@/types/domain";
 
 /**
@@ -20,7 +21,7 @@ import type { RecommendationResult } from "@/types/domain";
  * replacement (e.g. `getRecommendation = getAIRecommendation`).
  */
 export async function getRecommendation(userId: string): Promise<RecommendationResult | null> {
-  const progress = await computeUserProgress(userId);
+  const [progress, platform] = await Promise.all([computeUserProgress(userId), getUserPlatform(userId)]);
 
   // --- 1. Skills marked In Progress (oldest-updated first = likely stale) ---
   const inProgress = await prisma.userSkillStatus.findFirst({
@@ -38,7 +39,7 @@ export async function getRecommendation(userId: string): Promise<RecommendationR
       if (level.isLocked || level.isComplete) continue;
       const remaining = level.totalSkills - level.masteredCount;
       if (remaining === 1) {
-        const skill = await findOneActionableSkill(userId, area.areaId, level.levelName);
+        const skill = await findOneActionableSkill(userId, area.areaId, level.levelName, platform);
         if (skill) {
           return buildResult(
             skill,
@@ -54,7 +55,7 @@ export async function getRecommendation(userId: string): Promise<RecommendationR
   for (const area of progress) {
     const navigator = area.levels.find((l) => l.levelName === "Navigator");
     if (navigator && !navigator.isComplete) {
-      const skill = await findOneActionableSkill(userId, area.areaId, "Navigator");
+      const skill = await findOneActionableSkill(userId, area.areaId, "Navigator", platform);
       if (skill) {
         return buildResult(
           skill,
@@ -90,7 +91,7 @@ export async function getRecommendation(userId: string): Promise<RecommendationR
   for (const area of sortedByLeastDeveloped) {
     for (const level of area.levels) {
       if (level.isLocked) continue;
-      const skill = await findOneActionableSkill(userId, area.areaId, level.levelName);
+      const skill = await findOneActionableSkill(userId, area.areaId, level.levelName, platform);
       if (skill) {
         return buildResult(
           skill,
@@ -104,7 +105,12 @@ export async function getRecommendation(userId: string): Promise<RecommendationR
   return null; // everything assessed across every unlocked level
 }
 
-async function findOneActionableSkill(userId: string, areaId: string, levelName: LevelName) {
+async function findOneActionableSkill(
+  userId: string,
+  areaId: string,
+  levelName: LevelName,
+  platform: PlatformPreference
+) {
   const level = await prisma.level.findUnique({ where: { name: levelName } });
   if (!level) return null;
   const skill = await prisma.skill.findFirst({
@@ -113,6 +119,7 @@ async function findOneActionableSkill(userId: string, areaId: string, levelName:
       levelId: level.id,
       active: true,
       statuses: { none: { userId, status: "MASTERED" } },
+      ...platformWhere(platform),
     },
     orderBy: { order: "asc" },
     include: { capabilityArea: true, level: true },

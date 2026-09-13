@@ -8,6 +8,13 @@ import { completeOnboarding } from "@/lib/onboardingActions";
 import { Button } from "@/components/ui/Button";
 import { Icon } from "@/components/ui/Icon";
 import { LevelBadge } from "@/components/ui/LevelBadge";
+import { PLATFORM_LABELS, type PlatformPreference } from "@/lib/constants";
+
+const PLATFORM_OPTIONS: { value: PlatformPreference; icon: string; desc: string }[] = [
+  { value: "GOOGLE", icon: "cloud", desc: "Docs, Sheets, Slides, Gmail, Meet, Gemini…" },
+  { value: "MICROSOFT", icon: "building", desc: "Word, Excel, PowerPoint, Outlook, Teams, Copilot…" },
+  { value: "BOTH", icon: "layers", desc: "Show me examples from both, or I'm not sure yet." },
+];
 
 const AREAS = [
   { name: "Digital Proficiency & Productivity", icon: "gauge", color: "#2563EB" },
@@ -18,23 +25,26 @@ const AREAS = [
   { name: "Digital Identity & Wellbeing", icon: "heart-handshake", color: "#16A34A" },
 ];
 
-const STEPS = ["welcome", "areas", "levels", "choices", "momentum"] as const;
+const STEPS = ["welcome", "platform", "areas", "levels", "choices", "momentum"] as const;
 
 export function OnboardingFlow() {
   const [step, setStep] = useState(0);
+  const [platform, setPlatform] = useState<PlatformPreference | null>(null);
   const [finishing, setFinishing] = useState(false);
   const router = useRouter();
   const { update } = useSession();
 
   async function finish() {
     setFinishing(true);
-    await completeOnboarding();
+    await completeOnboarding(platform ?? "BOTH");
     await update();
     router.push("/discover");
     router.refresh();
   }
 
   const isLast = step === STEPS.length - 1;
+  const onPlatformStep = STEPS[step] === "platform";
+  const canContinue = !onPlatformStep || platform !== null;
 
   return (
     <div className="min-h-screen bg-[var(--color-surface)] flex flex-col">
@@ -71,6 +81,49 @@ export function OnboardingFlow() {
                   <p className="text-[var(--color-ink-muted)]">
                     A quick, personal check-in — not a test. Takes about two minutes to get started.
                   </p>
+                </div>
+              )}
+
+              {STEPS[step] === "platform" && (
+                <div>
+                  <h2 className="font-display text-2xl font-bold text-[var(--color-ink)] mb-2 text-center">
+                    Which does your college use?
+                  </h2>
+                  <p className="text-[var(--color-ink-muted)] text-center mb-6">
+                    We&apos;ll tailor examples and step-by-step instructions to your tools. You can change this
+                    later in your profile.
+                  </p>
+                  <div className="space-y-3">
+                    {PLATFORM_OPTIONS.map((opt) => {
+                      const selected = platform === opt.value;
+                      return (
+                        <button
+                          key={opt.value}
+                          type="button"
+                          onClick={() => setPlatform(opt.value)}
+                          aria-pressed={selected}
+                          className="w-full text-left rounded-xl border-2 bg-[var(--color-surface-raised)] p-4 flex items-start gap-3 transition-colors"
+                          style={{ borderColor: selected ? "var(--color-brand)" : "var(--color-border)" }}
+                        >
+                          <span
+                            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
+                            style={{
+                              background: selected ? "var(--color-brand)" : "var(--color-surface-sunken)",
+                              color: "var(--color-ink)",
+                            }}
+                          >
+                            <Icon name={opt.icon} className="h-4.5 w-4.5" />
+                          </span>
+                          <div>
+                            <div className="text-sm font-semibold text-[var(--color-ink)]">
+                              {PLATFORM_LABELS[opt.value]}
+                            </div>
+                            <div className="text-xs text-[var(--color-ink-muted)]">{opt.desc}</div>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               )}
 
@@ -175,7 +228,7 @@ export function OnboardingFlow() {
           </Button>
         )}
         {!isLast ? (
-          <Button onClick={() => setStep((s) => s + 1)} size="lg">
+          <Button onClick={() => setStep((s) => s + 1)} size="lg" disabled={!canContinue}>
             Continue
           </Button>
         ) : (

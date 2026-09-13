@@ -1,6 +1,7 @@
 import { requireUser } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
 import { ProfileForm } from "@/components/profile/ProfileForm";
+import type { PlatformPreference } from "@/lib/constants";
 
 export default async function ProfilePage() {
   const user = await requireUser();
@@ -21,6 +22,7 @@ export default async function ProfilePage() {
         department={record?.department ?? ""}
         jobTitle={record?.jobTitle ?? ""}
         weeklyTarget={momentum?.weeklyTarget ?? 3}
+        platformPreference={(record?.platformPreference as PlatformPreference) ?? "BOTH"}
       />
     </div>
   );

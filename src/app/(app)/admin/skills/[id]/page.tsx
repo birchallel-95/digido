@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { requireAdmin } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
 import { SkillForm } from "@/components/admin/SkillForm";
-import type { BenefitCategory } from "@/lib/constants";
+import type { BenefitCategory, PlatformPreference } from "@/lib/constants";
 
 export default async function EditSkillPage({ params }: { params: Promise<{ id: string }> }) {
   await requireAdmin();
@@ -33,6 +33,7 @@ export default async function EditSkillPage({ params }: { params: Promise<{ id: 
           practicalOutcome: skill.practicalOutcome,
           whyItMatters: skill.whyItMatters ?? "",
           howToSteps: JSON.parse(skill.howToSteps || "[]") as string[],
+          platform: skill.platform as PlatformPreference,
           benefitCategories: JSON.parse(skill.benefitCategories || "[]") as BenefitCategory[],
           tool: skill.tool ?? "",
           estimatedTimeMins: skill.estimatedTimeMins ?? undefined,

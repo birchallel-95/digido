@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createSkill, updateSkill, type SkillFormInput } from "@/lib/adminActions";
 import { Button } from "@/components/ui/Button";
-import { BENEFIT_CATEGORIES, BENEFIT_LABELS, type BenefitCategory } from "@/lib/constants";
+import { BENEFIT_CATEGORIES, BENEFIT_LABELS, PLATFORMS, PLATFORM_LABELS, type BenefitCategory } from "@/lib/constants";
 
 interface Option {
   id: string;
@@ -31,6 +31,7 @@ export function SkillForm({
     practicalOutcome: initial?.practicalOutcome ?? "",
     whyItMatters: initial?.whyItMatters ?? "",
     howToSteps: initial?.howToSteps ?? [],
+    platform: initial?.platform ?? "BOTH",
     benefitCategories: initial?.benefitCategories ?? [],
     tool: initial?.tool ?? "",
     estimatedTimeMins: initial?.estimatedTimeMins,
@@ -131,6 +132,35 @@ export function SkillForm({
         />
         <p className="mt-1 text-xs text-[var(--color-ink-faint)]">
           Shown to staff as a numbered checklist wherever this skill appears — the concrete steps, not just the outcome.
+        </p>
+      </div>
+
+      <div>
+        <label className={labelClass}>Platform</label>
+        <div className="flex flex-wrap gap-2">
+          {PLATFORMS.map((p) => {
+            const selected = form.platform === p;
+            return (
+              <button
+                type="button"
+                key={p}
+                onClick={() => setForm((f) => ({ ...f, platform: p }))}
+                aria-pressed={selected}
+                className="rounded-full px-3 py-1.5 text-xs font-medium border transition-colors"
+                style={{
+                  borderColor: selected ? "var(--color-brand-text)" : "var(--color-border)",
+                  background: selected ? "var(--color-brand-soft)" : "transparent",
+                  color: selected ? "var(--color-brand-text)" : "var(--color-ink-muted)",
+                }}
+              >
+                {PLATFORM_LABELS[p]}
+              </button>
+            );
+          })}
+        </div>
+        <p className="mt-1 text-xs text-[var(--color-ink-faint)]">
+          &quot;Both&quot; shows this skill to everyone regardless of platform preference — use it for anything that
+          isn&apos;t tied to a specific tool. Google/Microsoft skills only show to staff who chose that platform.
         </p>
       </div>
 

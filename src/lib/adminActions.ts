@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/session";
-import type { BenefitCategory } from "@/lib/constants";
+import type { BenefitCategory, PlatformPreference, Role } from "@/lib/constants";
 
 export interface SkillFormInput {
   capabilityAreaId: string;
@@ -13,6 +13,7 @@ export interface SkillFormInput {
   practicalOutcome: string;
   whyItMatters?: string;
   howToSteps: string[];
+  platform: PlatformPreference;
   benefitCategories: BenefitCategory[];
   tool?: string;
   estimatedTimeMins?: number;
@@ -146,6 +147,7 @@ export interface ImportRow {
   practicalOutcome: string;
   whyItMatters?: string;
   howTo?: string; // steps separated by " | " or newlines
+  platform?: string; // "Google" | "Microsoft" | "Both" (case-insensitive; defaults to Both)
   benefitCategory?: string;
   tool?: string;
   estimatedTimeMins?: number;
@@ -196,6 +198,7 @@ export async function importSkillRows(rows: ImportRow[]): Promise<ImportRowResul
             .filter(Boolean) ?? []
         ),
         benefitCategories: JSON.stringify(row.benefitCategory ? [row.benefitCategory.trim().toUpperCase().replace(/\s+/g, "_")] : []),
+        platform: parsePlatform(row.platform),
         tool: row.tool?.trim() || null,
         estimatedTimeMins: row.estimatedTimeMins ?? null,
         learningResourceUrl: row.resourceUrl?.trim() || null,
@@ -216,4 +219,44 @@ export async function importSkillRows(rows: ImportRow[]): Promise<ImportRowResul
 
   revalidatePath("/admin/skills");
   return results;
+}
+
+function parsePlatform(value?: string): PlatformPreference {
+  const v = value?.trim().toUpperCase();
+  if (v === "GOOGLE" || v === "MICROSOFT" || v === "BOTH") return v;
+  return "BOTH";
+}
+
+// ---------------------------------------------------------------------------
+// Staff account administration — account metadata only. Never touches a
+// user's skill statuses, evidence, or activity history (see adminUsers.ts).
+// ---------------------------------------------------------------------------
+
+export async function setUserRole(userId: string, role: Role) {
+  const admin = await requireAdmin();
+
+  if (userId === admin.id && role !== "ADMIN") {
+    const otherAdmins = await prisma.user.count({ where: { role: "ADMIN", id: { not: userId } } });
+    if (otherAdmins === 0) {
+      return { ok: false, error: "You're the only admin — promote someone else first." };
+    }
+  }
+
+  await prisma.user.update({ where: { id: userId }, data: { role } });
+  revalidatePath("/admin/users");
+  return { ok: true };
+}
+
+export async function removeStaffAccount(userId: string) {
+  const admin = await requireAdmin();
+  if (userId === admin.id) {
+    return { ok: false, error: "You can't remove your own account." };
+  }
+
+  // Cascades to that user's own sessions/skill statuses/activity/evidence
+  // (see the onDelete: Cascade relations in schema.prisma) — nobody else's
+  // data is affected.
+  await prisma.user.delete({ where: { id: userId } }).catch(() => null);
+  revalidatePath("/admin/users");
+  return { ok: true };
 }

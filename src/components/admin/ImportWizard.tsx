@@ -20,6 +20,7 @@ const COLUMN_MAP: Record<string, keyof ImportRow> = {
   "how to do this": "howTo",
   instructions: "howTo",
   "benefit category": "benefitCategory",
+  platform: "platform",
   tool: "tool",
   "estimated time": "estimatedTimeMins",
   "resource url": "resourceUrl",
@@ -101,8 +102,8 @@ export function ImportWizard({ knownAreas, knownLevels }: { knownAreas: string[]
         <p className="font-medium text-[var(--color-ink)] mb-1">Upload a CSV file</p>
         <p className="text-sm text-[var(--color-ink-muted)] mb-4">
           Expected columns: Capability Area, Level, Skill, Description, Outcome, Why It Matters, How To (steps
-          separated by a line break or &quot; | &quot;), Benefit Category, Tool, Estimated Time, Resource URL, Image
-          URL, Video URL.
+          separated by a line break or &quot; | &quot;), Platform (Google, Microsoft, or Both — defaults to Both),
+          Benefit Category, Tool, Estimated Time, Resource URL, Image URL, Video URL.
         </p>
         <label className="inline-block">
           <input
@@ -143,6 +144,7 @@ export function ImportWizard({ knownAreas, knownLevels }: { knownAreas: string[]
                 <th className="py-2 px-3 font-medium">Area</th>
                 <th className="py-2 px-3 font-medium">Level</th>
                 <th className="py-2 px-3 font-medium">Skill</th>
+                <th className="py-2 px-3 font-medium">Platform</th>
                 <th className="py-2 px-3 font-medium">Status</th>
               </tr>
             </thead>
@@ -152,6 +154,7 @@ export function ImportWizard({ knownAreas, knownLevels }: { knownAreas: string[]
                   <td className="py-2 px-3">{r.areaName}</td>
                   <td className="py-2 px-3">{r.levelName}</td>
                   <td className="py-2 px-3">{r.title}</td>
+                  <td className="py-2 px-3 text-[var(--color-ink-faint)]">{r.platform || "Both"}</td>
                   <td className="py-2 px-3">
                     {rowIssues.has(i) ? (
                       <span className="text-[var(--color-danger)]">{rowIssues.get(i)}</span>

@@ -64,19 +64,37 @@ Open http://localhost:3000.
   icons on a pale background) uses the separate, darker `--color-brand-text`
   token instead of the raw brand yellow, which is too light to read reliably
   as text. See the tokens and comments at the top of `globals.css`.
+- **Every skill has a `platform`** — `GOOGLE`, `MICROSOFT`, or `BOTH`
+  (suite-agnostic; shown to everyone). New staff pick a platform during
+  onboarding (changeable later in Profile), and `src/lib/platform.ts`'s
+  `platformWhere()` filters every skill query — progression math, the swipe
+  deck, and recommendations — so a Microsoft college never sees "open Google
+  Forms" and vice versa. The seed data mirrors every platform-specific skill
+  as a genuine pair (same outcome, real tool-specific steps) rather than
+  reusing one description for both, so progress percentages stay comparable
+  between platforms. Admins set/import `platform` per skill in the skill form
+  and CSV import (optional "Platform" column, defaults to Both).
+- **Admin "Staff accounts" page** (`/admin/users`) answers "who has an
+  account and where are they in onboarding" — name, email, role, platform,
+  sign-up/last-login dates, onboarding status, with promote/demote and
+  remove-account actions. It deliberately never joins to a user's skill
+  statuses or evidence — that boundary (account metadata vs. capability
+  self-assessment) is enforced by `adminUsers.ts` only ever selecting account
+  columns, never `UserSkillStatus`/`Evidence`.
 
 ## Where things live
 
 ```
 prisma/schema.prisma       Data model (see brief §27–39 mapped 1:1)
-prisma/seed.ts             Framework + ~75 skills + facts + milestones + demo users
+prisma/seed.ts             Framework + 123 skills (Google/Microsoft/Both) + facts + milestones + demo users
 src/lib/
   progression.ts           Per-area, per-level progress + stage-lock logic
   momentum.ts               Digital Momentum: streaks, weekly goal, activity log
   recommendations.ts        "Today's Digital Step" — rules-based, priority-ordered
   milestones.ts             Milestone-earning checks
+  platform.ts              Google/Microsoft/Both skill filtering
   skillActions.ts            The one mutation path for skill status changes
-  adminActions.ts / adminAnalytics.ts   Admin CRUD + aggregate-only analytics
+  adminActions.ts / adminAnalytics.ts / adminUsers.ts   Admin CRUD, aggregate analytics, account list
 src/components/
   discover/SwipeDeck.tsx     Swipe/button/keyboard skill assessment
   dashboard/RadarChart.tsx   Accessible radar chart + table alternative
@@ -88,21 +106,24 @@ src/app/onboarding/         5-screen first-run flow
 
 ## What's fully built (MVP list, brief §52)
 
-Landing page · registration & login · Google-OAuth-ready auth · onboarding ·
-dashboard (momentum, radar+table, Today's Digital Step, journeys, nearly
-there, weekly summary, recent achievements, PedTech fact of the day) · six
-capability areas × three levels, database-driven · swipe/button/keyboard
-assessment with undo · To Develop / In Progress lists · Achievements +
-Capability Passport · independent per-area progression & stage locking
-(admin-configurable threshold) · Digital Momentum with meaningful-day
-tracking and a configurable weekly goal · rules-based recommendation engine ·
-capability journey visualisation · development milestones · private activity
-timeline · optional evidence/reflections · admin dashboard with
-aggregate-only, privacy-respecting analytics · skill CRUD (add/edit/
-deactivate/reorder/move between areas or levels) · PedTech fact management ·
-CSV import (upload → preview → validate → confirm) · seed/demo data ·
-responsive mobile (bottom nav, single-column, swipe-first) and desktop
-(sidebar, expanded dashboard) layouts.
+Landing page · registration & login · Google-OAuth-ready auth · onboarding
+(including a Google/Microsoft/Both platform choice) · dashboard (momentum,
+radar+table, Today's Digital Step, journeys, nearly there, weekly summary,
+recent achievements, PedTech fact of the day) · six capability areas × three
+levels, database-driven, each skill with numbered "how to do this" steps ·
+swipe/button/keyboard assessment with undo · To Develop / In Progress lists ·
+Achievements + Capability Passport · independent per-area progression &
+stage locking (admin-configurable threshold) · Digital Momentum with
+meaningful-day tracking and a configurable weekly goal · rules-based
+recommendation engine · capability journey visualisation · development
+milestones · private activity timeline · optional evidence/reflections ·
+admin dashboard with aggregate-only, privacy-respecting analytics · staff
+account administration (who's signed up, onboarding status, role, remove/
+promote) · skill CRUD (add/edit/deactivate/reorder/move between areas,
+levels or platforms) · PedTech fact management · CSV import (upload →
+preview → validate → confirm) · seed/demo data · responsive mobile (bottom
+nav, single-column, swipe-first) and desktop (sidebar, expanded dashboard)
+layouts.
 
 ## Known simplifications (documented, not hidden)
 
@@ -118,6 +139,12 @@ responsive mobile (bottom nav, single-column, swipe-first) and desktop
 - **XLSX import** isn't built, only CSV (which was the required format).
 - Skill **images/video** fields exist end-to-end in the schema and admin form
   but no skill in the seed data uses them (no real assets to hand).
+- **The seed script's own re-run logic matches skills by title**, not by a
+  stable key — renaming a skill inside `prisma/seed.ts` and re-running the
+  seed creates a new row rather than renaming the old one (harmless, but
+  leaves an orphaned stale row on a dev database). This only affects editing
+  the seed source itself; the actual admin UI always edits skills by their
+  database ID, so renaming a skill from `/admin/skills` is always safe.
 
 ## Enabling Google sign-in
 

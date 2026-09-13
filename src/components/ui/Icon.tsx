@@ -42,6 +42,9 @@ import {
   Info,
   ExternalLink,
   ListChecks,
+  Cloud,
+  Building2,
+  Layers,
   type LucideIcon,
 } from "lucide-react";
 
@@ -91,6 +94,9 @@ export const ICONS: Record<string, LucideIcon> = {
   external: ExternalLink,
   chevron: ChevronRight,
   "list-checks": ListChecks,
+  cloud: Cloud,
+  building: Building2,
+  layers: Layers,
 };
 
 export function Icon({

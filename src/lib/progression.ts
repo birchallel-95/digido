@@ -4,6 +4,7 @@ import {
   LEVEL_META,
   type LevelName,
 } from "@/lib/constants";
+import { getUserPlatform, platformWhere } from "@/lib/platform";
 import type { AreaProgress, LevelProgress, SkillWithStatus } from "@/types/domain";
 
 const LEVEL_ORDER: LevelName[] = ["Navigator", "Elevator", "Catalyst"];
@@ -23,14 +24,14 @@ export async function getStageCompletionThreshold(): Promise<number> {
  * progression in one area never depends on any other area.
  */
 export async function computeUserProgress(userId: string): Promise<AreaProgress[]> {
-  const threshold = await getStageCompletionThreshold();
+  const [threshold, platform] = await Promise.all([getStageCompletionThreshold(), getUserPlatform(userId)]);
 
   const areas = await prisma.capabilityArea.findMany({
     where: { active: true },
     orderBy: { order: "asc" },
     include: {
       skills: {
-        where: { active: true },
+        where: { active: true, ...platformWhere(platform) },
         include: {
           level: true,
           statuses: { where: { userId } },
@@ -111,11 +112,14 @@ export async function getSkillsForAreaLevel(
   areaId: string,
   levelName: LevelName
 ): Promise<SkillWithStatus[]> {
-  const level = await prisma.level.findUnique({ where: { name: levelName } });
+  const [level, platform] = await Promise.all([
+    prisma.level.findUnique({ where: { name: levelName } }),
+    getUserPlatform(userId),
+  ]);
   if (!level) return [];
 
   const skills = await prisma.skill.findMany({
-    where: { capabilityAreaId: areaId, levelId: level.id, active: true },
+    where: { capabilityAreaId: areaId, levelId: level.id, active: true, ...platformWhere(platform) },
     orderBy: { order: "asc" },
     include: {
       capabilityArea: true,

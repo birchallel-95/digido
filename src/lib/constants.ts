@@ -124,3 +124,21 @@ export const SWIPE_STATUS_MAP: Record<"left" | "up" | "right", SkillStatusValue>
   up: "IN_PROGRESS",
   right: "MASTERED",
 };
+
+// A skill's "platform" says which suite its tool/steps are written for.
+// "BOTH" means the skill is genuinely suite-agnostic (e.g. password
+// hygiene, VR safety) and is shown to everyone regardless of preference.
+export const PLATFORMS = ["GOOGLE", "MICROSOFT", "BOTH"] as const;
+export type PlatformPreference = (typeof PLATFORMS)[number];
+
+export const PLATFORM_LABELS: Record<PlatformPreference, string> = {
+  GOOGLE: "Google Workspace",
+  MICROSOFT: "Microsoft 365",
+  BOTH: "Both / not sure",
+};
+
+export const PLATFORM_SHORT_LABELS: Record<PlatformPreference, string> = {
+  GOOGLE: "Google",
+  MICROSOFT: "Microsoft",
+  BOTH: "Both",
+};

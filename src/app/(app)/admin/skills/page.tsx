@@ -4,15 +4,15 @@ import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/Button";
 import { LevelBadge } from "@/components/ui/LevelBadge";
 import { SkillRowActions } from "@/components/admin/SkillRowActions";
-import type { LevelName } from "@/lib/constants";
+import { PLATFORMS, PLATFORM_SHORT_LABELS, type LevelName, type PlatformPreference } from "@/lib/constants";
 
 export default async function AdminSkillsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ area?: string; level?: string }>;
+  searchParams: Promise<{ area?: string; level?: string; platform?: string }>;
 }) {
   await requireAdmin();
-  const { area: areaFilter, level: levelFilter } = await searchParams;
+  const { area: areaFilter, level: levelFilter, platform: platformFilter } = await searchParams;
 
   const [areas, levels, skills] = await Promise.all([
     prisma.capabilityArea.findMany({ orderBy: { order: "asc" } }),
@@ -21,6 +21,7 @@ export default async function AdminSkillsPage({
       where: {
         capabilityAreaId: areaFilter || undefined,
         levelId: levelFilter || undefined,
+        platform: platformFilter || undefined,
       },
       orderBy: [{ capabilityAreaId: "asc" }, { levelId: "asc" }, { order: "asc" }],
       include: { capabilityArea: true, level: true },
@@ -56,6 +57,14 @@ export default async function AdminSkillsPage({
             </option>
           ))}
         </select>
+        <select name="platform" defaultValue={platformFilter ?? ""} className="rounded-xl border border-[var(--color-border)] px-3 py-2 text-sm bg-[var(--color-surface-raised)]">
+          <option value="">All platforms</option>
+          {PLATFORMS.map((p) => (
+            <option key={p} value={p}>
+              {PLATFORM_SHORT_LABELS[p]}
+            </option>
+          ))}
+        </select>
         <Button type="submit" variant="outline" size="sm">
           Filter
         </Button>
@@ -68,6 +77,7 @@ export default async function AdminSkillsPage({
               <th className="py-2.5 px-4 font-medium">Title</th>
               <th className="py-2.5 px-4 font-medium">Area</th>
               <th className="py-2.5 px-4 font-medium">Level</th>
+              <th className="py-2.5 px-4 font-medium">Platform</th>
               <th className="py-2.5 px-4 font-medium">Status</th>
               <th className="py-2.5 px-4 font-medium text-right">Actions</th>
             </tr>
@@ -79,6 +89,9 @@ export default async function AdminSkillsPage({
                 <td className="py-2.5 px-4 text-[var(--color-ink-muted)]">{s.capabilityArea.name}</td>
                 <td className="py-2.5 px-4">
                   <LevelBadge level={s.level.name as LevelName} size="sm" />
+                </td>
+                <td className="py-2.5 px-4 text-[var(--color-ink-muted)]">
+                  {PLATFORM_SHORT_LABELS[s.platform as PlatformPreference]}
                 </td>
                 <td className="py-2.5 px-4">
                   <span className={s.active ? "text-[var(--color-success)]" : "text-[var(--color-ink-faint)]"}>
