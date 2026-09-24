@@ -66,10 +66,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       // longer exists.
       const REVALIDATE_INTERVAL_MS = 5 * 60 * 1000;
       const staleCheck = typeof token.checkedAt !== "number" || Date.now() - token.checkedAt > REVALIDATE_INTERVAL_MS;
-      console.log("[jwt-debug]", { trigger, hasUser: Boolean(user), tokenEmail: token.email, tokenOnboardedBefore: token.onboarded, staleCheck });
       if ((token.onboarded === undefined || trigger === "update" || staleCheck) && token.email) {
         const dbUser = await prisma.user.findUnique({ where: { email: token.email } });
-        console.log("[jwt-debug] refetched", { found: Boolean(dbUser), dbOnboarded: dbUser?.onboarded });
         if (!dbUser) return null; // account no longer exists — invalidate the session
         token.role = dbUser.role as Role;
         token.uid = dbUser.id;

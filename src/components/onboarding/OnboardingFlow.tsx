@@ -37,7 +37,11 @@ export function OnboardingFlow() {
   async function finish() {
     setFinishing(true);
     await completeOnboarding(platform ?? "BOTH");
-    await update();
+    // next-auth's update() only does a real server round-trip (the one that
+    // re-reads onboarded from the DB) when called WITH an argument — called
+    // bare, it silently sends a bodyless GET and the session never refreshes,
+    // leaving the user stuck bouncing back to /onboarding forever.
+    await update({});
     router.push("/discover");
     router.refresh();
   }
