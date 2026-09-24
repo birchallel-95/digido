@@ -54,16 +54,27 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (user) {
         token.role = ((user as { role?: Role }).role ?? "STAFF") as Role;
         token.uid = user.id;
+        token.checkedAt = Date.now();
       }
-      if ((token.onboarded === undefined || trigger === "update") && token.email) {
-        // Populate/refresh role + onboarding state from the DB (covers OAuth
-        // sign-ins, and re-syncs right after onboarding completes).
+
+      // Re-sync role/onboarding from the DB on first sign-in, right after
+      // onboarding completes, and periodically thereafter — the periodic
+      // check is what catches an account that's been removed (by an admin,
+      // or a dev database reset) while its session is still active, so a
+      // deleted user gets signed out gracefully instead of every subsequent
+      // action failing with a raw foreign-key error against a user that no
+      // longer exists.
+      const REVALIDATE_INTERVAL_MS = 5 * 60 * 1000;
+      const staleCheck = typeof token.checkedAt !== "number" || Date.now() - token.checkedAt > REVALIDATE_INTERVAL_MS;
+      console.log("[jwt-debug]", { trigger, hasUser: Boolean(user), tokenEmail: token.email, tokenOnboardedBefore: token.onboarded, staleCheck });
+      if ((token.onboarded === undefined || trigger === "update" || staleCheck) && token.email) {
         const dbUser = await prisma.user.findUnique({ where: { email: token.email } });
-        if (dbUser) {
-          token.role = dbUser.role as Role;
-          token.uid = dbUser.id;
-          token.onboarded = dbUser.onboarded;
-        }
+        console.log("[jwt-debug] refetched", { found: Boolean(dbUser), dbOnboarded: dbUser?.onboarded });
+        if (!dbUser) return null; // account no longer exists — invalidate the session
+        token.role = dbUser.role as Role;
+        token.uid = dbUser.id;
+        token.onboarded = dbUser.onboarded;
+        token.checkedAt = Date.now();
       }
       return token;
     },
