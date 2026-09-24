@@ -1,18 +1,17 @@
 // Digital Capability Passport — data model
-// NOTE: using SQLite for zero-config local/demo use. To move to Postgres for
-// production, change `provider` below to "postgresql", point DATABASE_URL at
-// a Postgres instance, and re-introduce native `enum` blocks in place of the
-// `String` fields marked "// enum:" below (SQLite has no native enum support
-// in Prisma, so those values are validated in the TypeScript layer instead —
-// see src/lib/constants.ts).
+// Postgres (Neon) in every environment. Fields marked "// enum:" are plain
+// strings validated in the TypeScript layer (see src/lib/constants.ts)
+// rather than native Postgres enums — kept as-is from the original
+// SQLite-compatible design so no data migration is needed to change them.
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_DATABASE_URL")
 }
 
 // ---------------------------------------------------------------------------

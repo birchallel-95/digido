@@ -2438,69 +2438,79 @@ async function main() {
     create: { key: "stageCompletionThreshold", value: "100" },
   });
 
-  console.log("Seeding demo users...");
-  const passwordHash = await bcrypt.hash("Password123!", 10);
+  // Demo accounts (with a shared, publicly-known password) are only ever
+  // seeded when explicitly opted into — never in production. Production
+  // admins register for themselves through the normal /register flow and
+  // get promoted to ADMIN directly, so no known password ever exists in a
+  // real database. Set SEED_DEMO_DATA=true locally to keep the old
+  // zero-config demo experience.
+  if (process.env.SEED_DEMO_DATA === "true") {
+    console.log("Seeding demo users...");
+    const passwordHash = await bcrypt.hash("Password123!", 10);
 
-  const admin = await prisma.user.upsert({
-    where: { email: "admin@example.ac.uk" },
-    update: {},
-    create: {
-      name: "Alex Morgan",
-      email: "admin@example.ac.uk",
-      passwordHash,
-      role: "ADMIN",
-      department: "Digital Learning",
-      jobTitle: "Digital Learning Lead",
-      onboarded: true,
-    },
-  });
+    const admin = await prisma.user.upsert({
+      where: { email: "admin@example.ac.uk" },
+      update: {},
+      create: {
+        name: "Alex Morgan",
+        email: "admin@example.ac.uk",
+        passwordHash,
+        role: "ADMIN",
+        department: "Digital Learning",
+        jobTitle: "Digital Learning Lead",
+        onboarded: true,
+      },
+    });
 
-  const freshStaff = await prisma.user.upsert({
-    where: { email: "new.starter@example.ac.uk" },
-    update: {},
-    create: {
-      name: "Jordan Lee",
-      email: "new.starter@example.ac.uk",
-      passwordHash,
-      role: "STAFF",
-      department: "Business Studies",
-      jobTitle: "Lecturer",
-      onboarded: false,
-    },
-  });
+    const freshStaff = await prisma.user.upsert({
+      where: { email: "new.starter@example.ac.uk" },
+      update: {},
+      create: {
+        name: "Jordan Lee",
+        email: "new.starter@example.ac.uk",
+        passwordHash,
+        role: "STAFF",
+        department: "Business Studies",
+        jobTitle: "Lecturer",
+        onboarded: false,
+      },
+    });
 
-  // Primary demo account — the product owner's own account, given ADMIN so
-  // they see the Administration area, but with a "lived in" staff profile
-  // (real momentum, mixed progress, evidence, earned milestones) so their
-  // own dashboard demonstrates the full product rather than an empty state.
-  const emily = await prisma.user.upsert({
-    where: { email: "birchallel@gmail.com" },
-    update: {},
-    create: {
-      name: "Emily",
-      email: "birchallel@gmail.com",
-      passwordHash,
-      role: "ADMIN",
-      department: "Digital Learning",
-      jobTitle: "Curriculum Lead",
-      onboarded: true,
-    },
-  });
+    // Primary demo account — the product owner's own account, given ADMIN so
+    // they see the Administration area, but with a "lived in" staff profile
+    // (real momentum, mixed progress, evidence, earned milestones) so their
+    // own dashboard demonstrates the full product rather than an empty state.
+    const emily = await prisma.user.upsert({
+      where: { email: "birchallel@gmail.com" },
+      update: {},
+      create: {
+        name: "Emily",
+        email: "birchallel@gmail.com",
+        passwordHash,
+        role: "ADMIN",
+        department: "Digital Learning",
+        jobTitle: "Curriculum Lead",
+        onboarded: true,
+      },
+    });
 
-  console.log("Seeding Emily's demo progress...");
-  // Idempotent: clear Emily's transactional demo data first so re-running
-  // the seed never duplicates activity/evidence rows.
-  await prisma.developmentActivity.deleteMany({ where: { userId: emily.id } });
-  await prisma.evidence.deleteMany({ where: { userId: emily.id } });
-  await prisma.userMilestone.deleteMany({ where: { userId: emily.id } });
-  await prisma.userPriority.deleteMany({ where: { userId: emily.id } });
-  await prisma.userSkillStatus.deleteMany({ where: { userId: emily.id } });
-  await seedEmilyProgress(emily.id, areaByKey, skillIdByTitle);
+    console.log("Seeding Emily's demo progress...");
+    // Idempotent: clear Emily's transactional demo data first so re-running
+    // the seed never duplicates activity/evidence rows.
+    await prisma.developmentActivity.deleteMany({ where: { userId: emily.id } });
+    await prisma.evidence.deleteMany({ where: { userId: emily.id } });
+    await prisma.userMilestone.deleteMany({ where: { userId: emily.id } });
+    await prisma.userPriority.deleteMany({ where: { userId: emily.id } });
+    await prisma.userSkillStatus.deleteMany({ where: { userId: emily.id } });
+    await seedEmilyProgress(emily.id, areaByKey, skillIdByTitle);
 
-  console.log("\nDone. Demo accounts (password: Password123! for all):");
-  console.log(`  Admin:        ${admin.email}`);
-  console.log(`  Staff (rich): ${emily.email}`);
-  console.log(`  Staff (new):  ${freshStaff.email}`);
+    console.log("\nDone. Demo accounts (password: Password123! for all):");
+    console.log(`  Admin:        ${admin.email}`);
+    console.log(`  Staff (rich): ${emily.email}`);
+    console.log(`  Staff (new):  ${freshStaff.email}`);
+  } else {
+    console.log("\nDone. Framework data seeded — no demo accounts created (set SEED_DEMO_DATA=true to include them).");
+  }
 }
 
 async function seedEmilyProgress(
