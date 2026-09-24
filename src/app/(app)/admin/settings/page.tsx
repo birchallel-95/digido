@@ -1,10 +1,11 @@
 import { requireAdmin } from "@/lib/session";
 import { getStageCompletionThreshold } from "@/lib/progression";
+import { getShowReflections } from "@/lib/adminConfig";
 import { SettingsForm } from "@/components/admin/SettingsForm";
 
 export default async function AdminSettingsPage() {
   await requireAdmin();
-  const threshold = await getStageCompletionThreshold();
+  const [threshold, showReflections] = await Promise.all([getStageCompletionThreshold(), getShowReflections()]);
 
   return (
     <div className="space-y-6">
@@ -12,7 +13,7 @@ export default async function AdminSettingsPage() {
         <h1 className="font-display text-2xl sm:text-3xl font-bold text-[var(--color-ink)]">Settings</h1>
         <p className="text-[var(--color-ink-muted)] mt-1">Organisation-wide configuration for progression.</p>
       </div>
-      <SettingsForm threshold={threshold} />
+      <SettingsForm threshold={threshold} showReflections={showReflections} />
     </div>
   );
 }

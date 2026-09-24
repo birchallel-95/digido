@@ -139,6 +139,23 @@ export async function updateStageCompletionThreshold(percent: number) {
   return { ok: true };
 }
 
+/**
+ * Turns visibility of staff reflection *text* on the admin dashboard on/off.
+ * Off by default. Reflection counts are always visible regardless of this
+ * setting — only the written content is gated.
+ */
+export async function setShowReflections(enabled: boolean) {
+  await requireAdmin();
+  await prisma.systemConfig.upsert({
+    where: { key: "adminShowReflections" },
+    create: { key: "adminShowReflections", value: String(enabled) },
+    update: { value: String(enabled) },
+  });
+  revalidatePath("/admin/settings");
+  revalidatePath("/admin/dashboard");
+  return { ok: true };
+}
+
 export interface ImportRow {
   areaName: string;
   levelName: string;

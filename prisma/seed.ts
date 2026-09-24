@@ -2469,9 +2469,10 @@ async function main() {
     },
   });
 
-  // Primary demo staff account — a "lived in" profile with real momentum,
-  // mixed progress across areas, evidence, and earned milestones so the
-  // dashboard demonstrates the full product rather than an empty state.
+  // Primary demo account — the product owner's own account, given ADMIN so
+  // they see the Administration area, but with a "lived in" staff profile
+  // (real momentum, mixed progress, evidence, earned milestones) so their
+  // own dashboard demonstrates the full product rather than an empty state.
   const emily = await prisma.user.upsert({
     where: { email: "birchallel@gmail.com" },
     update: {},
@@ -2479,7 +2480,7 @@ async function main() {
       name: "Emily",
       email: "birchallel@gmail.com",
       passwordHash,
-      role: "STAFF",
+      role: "ADMIN",
       department: "Digital Learning",
       jobTitle: "Curriculum Lead",
       onboarded: true,
