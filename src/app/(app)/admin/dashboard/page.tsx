@@ -8,10 +8,11 @@ import { SignupsChart } from "@/components/admin/SignupsChart";
 import { RagBreakdownSection } from "@/components/admin/RagBreakdownSection";
 import { AdminUsersRagTable } from "@/components/admin/AdminUsersRagTable";
 import { ReflectionsPanel } from "@/components/admin/ReflectionsPanel";
+import { getCheckpointStats } from "@/lib/checkpointAdmin";
 
 export default async function AdminDashboardPage() {
   await requireAdmin();
-  const data = await getAdminDashboardData();
+  const [data, checkpointStats] = await Promise.all([getAdminDashboardData(), getCheckpointStats()]);
   const reflections = data.showReflections ? await getReflectionsDetail() : [];
 
   return (
@@ -98,6 +99,47 @@ export default async function AdminDashboardPage() {
             </span>
           </div>
           <ReflectionsPanel reflections={reflections} showReflections={data.showReflections} />
+        </CardBody>
+      </Card>
+
+      <Card>
+        <CardBody className="pt-5">
+          <div className="flex flex-wrap items-center justify-between gap-2 mb-1">
+            <h2 className="font-display font-bold text-[var(--color-ink)]">Jisc checkpoint completion</h2>
+            <Link href="/admin/settings" className="text-xs text-[var(--color-brand-text)] hover:underline">
+              Edit link/dates in Settings →
+            </Link>
+          </div>
+          <p className="text-sm text-[var(--color-ink-muted)] mb-4">
+            Self-reported — staff tick this themselves after completing the Jisc assessment, it isn&apos;t verified.
+          </p>
+          {checkpointStats.currentWindow ? (
+            <div className="rounded-2xl bg-[var(--color-brand-soft)] p-4 mb-4">
+              <p className="text-2xl font-display font-bold text-[var(--color-ink)]">
+                {checkpointStats.currentWindow.completedCount} / {checkpointStats.totalStaff}
+              </p>
+              <p className="text-sm text-[var(--color-brand-text)] font-medium">
+                staff have self-reported completing the {checkpointStats.currentWindow.label} checkpoint
+              </p>
+            </div>
+          ) : (
+            <p className="text-sm text-[var(--color-ink-muted)] mb-4">No checkpoint window is currently open.</p>
+          )}
+          {checkpointStats.recentWindows.length > 0 && (
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-[var(--color-ink-faint)] mb-2">Previous windows</p>
+              <ul className="space-y-1.5">
+                {checkpointStats.recentWindows.map((w) => (
+                  <li key={w.windowKey} className="flex items-center justify-between text-sm">
+                    <span className="text-[var(--color-ink)]">{w.label}</span>
+                    <span className="text-[var(--color-ink-faint)] tabular-nums">
+                      {w.completedCount} / {checkpointStats.totalStaff}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </CardBody>
       </Card>
     </div>

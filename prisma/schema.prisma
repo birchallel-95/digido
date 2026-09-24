@@ -43,6 +43,7 @@ model User {
   milestones    UserMilestone[]
   evidence      Evidence[]
   priorities    UserPriority[]
+  checkpointCompletions CheckpointCompletion[]
 }
 
 model Account {
@@ -274,6 +275,26 @@ model PedTechFact {
   active      Boolean   @default(true)
   displayDate DateTime?
   createdAt   DateTime  @default(now())
+}
+
+// ---------------------------------------------------------------------------
+// Twice-yearly Jisc digital capabilities checkpoint (self-reported)
+// ---------------------------------------------------------------------------
+
+// One row per person per checkpoint window (e.g. "2026-autumn") — a
+// self-report that they've completed the Jisc assessment that window, not a
+// verified result. Window dates/link/on-off live in SystemConfig (see
+// src/lib/checkpointConfig.ts), same pattern as other admin-tunable settings.
+model CheckpointCompletion {
+  id          String   @id @default(cuid())
+  userId      String
+  windowKey   String // e.g. "2026-autumn" | "2026-summer"
+  completedAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, windowKey])
+  @@index([windowKey])
 }
 
 // ---------------------------------------------------------------------------

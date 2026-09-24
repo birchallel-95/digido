@@ -1,5 +1,6 @@
 import { requireUser } from "@/lib/session";
 import { getDashboardData } from "@/lib/dashboard";
+import { getCheckpointDashboardState } from "@/lib/checkpointActions";
 import { Card, CardBody } from "@/components/ui/Card";
 import { RadarChart } from "@/components/dashboard/RadarChart";
 import { MomentumWidget } from "@/components/dashboard/MomentumWidget";
@@ -8,6 +9,7 @@ import { JourneyCard } from "@/components/dashboard/JourneyCard";
 import { NearlyThere } from "@/components/dashboard/NearlyThere";
 import { RecentAchievements } from "@/components/dashboard/RecentAchievements";
 import { PedTechFactCard } from "@/components/dashboard/PedTechFactCard";
+import { CheckpointReminder } from "@/components/dashboard/CheckpointReminder";
 import { Icon } from "@/components/ui/Icon";
 
 function getGreeting() {
@@ -19,11 +21,15 @@ function getGreeting() {
 
 export default async function DashboardPage() {
   const user = await requireUser();
-  const data = await getDashboardData(user.id);
+  const [data, checkpoint] = await Promise.all([getDashboardData(user.id), getCheckpointDashboardState()]);
   const firstName = (user.name ?? "there").split(" ")[0];
 
   return (
     <div className="space-y-6">
+      {checkpoint && checkpoint.window.status === "open" && (
+        <CheckpointReminder window={checkpoint.window} completedThisWindow={checkpoint.completedThisWindow} linkUrl={checkpoint.linkUrl} />
+      )}
+
       <div>
         <h1 className="font-display text-2xl sm:text-3xl font-bold text-[var(--color-ink)]">
           {getGreeting()}, {firstName}.
@@ -81,6 +87,10 @@ export default async function DashboardPage() {
           ))}
         </div>
       </div>
+
+      {checkpoint && checkpoint.window.status === "closed" && (
+        <CheckpointReminder window={checkpoint.window} completedThisWindow={false} linkUrl={checkpoint.linkUrl} />
+      )}
 
       <div className="grid lg:grid-cols-2 gap-5">
         <Card>

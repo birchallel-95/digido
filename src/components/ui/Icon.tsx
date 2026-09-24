@@ -45,6 +45,8 @@ import {
   Cloud,
   Building2,
   Layers,
+  Calendar,
+  CalendarCheck,
   type LucideIcon,
 } from "lucide-react";
 
@@ -97,6 +99,8 @@ export const ICONS: Record<string, LucideIcon> = {
   cloud: Cloud,
   building: Building2,
   layers: Layers,
+  calendar: Calendar,
+  "calendar-check": CalendarCheck,
 };
 
 export function Icon({
