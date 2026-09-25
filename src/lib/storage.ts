@@ -20,6 +20,13 @@ const r2Configured = Boolean(
 
 export const isCloudStorageConfigured = r2Configured;
 
+// The local-disk fallback below only works where the filesystem is actually
+// writable and persistent — true for a local `next dev`, never true on
+// Vercel (its deployed filesystem is read-only outside /tmp, and /tmp itself
+// doesn't survive between invocations). Uploads must refuse cleanly rather
+// than attempt a doomed disk write there.
+export const uploadsAvailable = r2Configured || !process.env.VERCEL;
+
 const LOCAL_UPLOADS_DIR = path.join(process.cwd(), "uploads");
 
 const s3 = r2Configured

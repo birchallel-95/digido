@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requireUser } from "@/lib/session";
-import { getUploadUrl, getPlaybackUrl, deleteObject, newStorageKey } from "@/lib/storage";
+import { getUploadUrl, getPlaybackUrl, deleteObject, newStorageKey, uploadsAvailable } from "@/lib/storage";
 import { probeVideo } from "@/lib/videoProbe";
 import { generateCaptions, captionsAiConfigured, segmentsToVtt, segmentsToPlainText, parseCaptionFile, type CaptionSegment } from "@/lib/captions";
 import {
@@ -60,6 +60,9 @@ export async function getVideoTagOptions(): Promise<TagPickerArea[]> {
 
 export async function requestVideoUpload(filename: string, contentType: string, fileSize: number) {
   await requireUser();
+  if (!uploadsAvailable) {
+    return { ok: false as const, error: "Video uploads aren't set up on this site yet — ask your admin to configure storage." };
+  }
   if (fileSize > VIDEO_MAX_FILE_SIZE_BYTES) {
     return { ok: false as const, error: "That file is over the 100MB limit — try a shorter or more compressed clip." };
   }
