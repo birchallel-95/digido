@@ -32,6 +32,7 @@ export default async function VideosPage({
         initialCursor={nextCursor}
         initialFilter={filter}
         tagOptions={tagOptions}
+        currentUserId={user.id}
       />
     </Suspense>
   );

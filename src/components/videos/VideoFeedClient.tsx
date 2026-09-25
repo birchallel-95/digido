@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
 import { Button } from "@/components/ui/Button";
-import { toggleHelpful, reportVideo, type TagPickerArea } from "@/lib/videoActions";
+import { toggleHelpful, reportVideo, deleteVideo, type TagPickerArea } from "@/lib/videoActions";
 import { fetchVideoFeed, recordVideoView, getVideoById } from "@/lib/videoFeedActions";
 import type { FeedVideo, FeedFilter } from "@/lib/videoFeed";
 import { VIDEO_TYPE_LABELS, VIDEO_TYPES, type VideoType } from "@/lib/constants";
@@ -21,11 +21,13 @@ export function VideoFeedClient({
   initialCursor,
   initialFilter,
   tagOptions,
+  currentUserId,
 }: {
   initialVideos: FeedVideo[];
   initialCursor: string | null;
   initialFilter: FeedFilter;
   tagOptions: TagPickerArea[];
+  currentUserId: string;
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -41,6 +43,8 @@ export function VideoFeedClient({
   const [reportIndex, setReportIndex] = useState<number | null>(null);
   const [reportReason, setReportReason] = useState("");
   const [reportSent, setReportSent] = useState(false);
+  const [deleteIndex, setDeleteIndex] = useState<number | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const [shareCopiedId, setShareCopiedId] = useState<string | null>(null);
   const [helpfulState, setHelpfulState] = useState<Record<string, { count: number; mine: boolean }>>(() =>
     Object.fromEntries(initialVideos.map((v) => [v.id, { count: v.helpfulCount, mine: v.userHasMarkedHelpful }]))
@@ -145,7 +149,7 @@ export function VideoFeedClient({
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
-      if (filterOpen || infoIndex !== null || reportIndex !== null) return;
+      if (filterOpen || infoIndex !== null || reportIndex !== null || deleteIndex !== null) return;
       const container = containerRef.current;
       if (!container) return;
       if (e.key === "ArrowDown") {
@@ -158,7 +162,7 @@ export function VideoFeedClient({
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [filterOpen, infoIndex, reportIndex]);
+  }, [filterOpen, infoIndex, reportIndex, deleteIndex]);
 
   function toggleSound() {
     setSoundOn((prev) => {
@@ -205,6 +209,22 @@ export function VideoFeedClient({
       setReportSent(false);
       setReportReason("");
     }, 1500);
+  }
+
+  async function confirmDelete() {
+    if (deleteIndex === null) return;
+    const video = videos[deleteIndex];
+    setDeleting(true);
+    await deleteVideo(video.id);
+    setVideos((prev) => prev.filter((v) => v.id !== video.id));
+    setHelpfulState((prev) => {
+      const next = { ...prev };
+      delete next[video.id];
+      return next;
+    });
+    setActiveIndex((prev) => Math.min(prev, Math.max(videos.length - 2, 0)));
+    setDeleting(false);
+    setDeleteIndex(null);
   }
 
   async function applyFilter(next: FeedFilter) {
@@ -270,6 +290,7 @@ export function VideoFeedClient({
               video={video}
               index={index}
               isActive={index === activeIndex}
+              isMine={video.uploaderId === currentUserId}
               soundOn={soundOn}
               captionsOn={captionsOn}
               helpful={helpfulState[video.id] ?? { count: video.helpfulCount, mine: video.userHasMarkedHelpful }}
@@ -281,6 +302,7 @@ export function VideoFeedClient({
               onShare={() => handleShare(video)}
               onReport={() => setReportIndex(index)}
               onInfo={() => setInfoIndex(index)}
+              onDelete={() => setDeleteIndex(index)}
             />
           ))}
         </div>
@@ -297,6 +319,13 @@ export function VideoFeedClient({
             <Icon name="x" className="h-5 w-5" />
           </Link>
           <div className="pointer-events-auto flex items-center gap-2">
+            <Link
+              href={filter.skillId ? `/videos/upload?skillId=${filter.skillId}` : "/videos/upload"}
+              aria-label="Add a video"
+              className="flex h-9 w-9 items-center justify-center rounded-full bg-black/40 text-white"
+            >
+              <Icon name="plus" className="h-4.5 w-4.5" />
+            </Link>
             <button
               onClick={() => setCaptionsOn((c) => !c)}
               aria-pressed={captionsOn}
@@ -348,6 +377,10 @@ export function VideoFeedClient({
           onSubmit={submitReport}
         />
       )}
+
+      {deleteIndex !== null && (
+        <DeleteConfirmSheet deleting={deleting} onCancel={() => setDeleteIndex(null)} onConfirm={confirmDelete} />
+      )}
     </div>
   );
 }
@@ -356,6 +389,7 @@ function FeedVideoItem({
   video,
   index,
   isActive,
+  isMine,
   soundOn,
   captionsOn,
   helpful,
@@ -367,10 +401,12 @@ function FeedVideoItem({
   onShare,
   onReport,
   onInfo,
+  onDelete,
 }: {
   video: FeedVideo;
   index: number;
   isActive: boolean;
+  isMine: boolean;
   soundOn: boolean;
   captionsOn: boolean;
   helpful: { count: number; mine: boolean };
@@ -382,6 +418,7 @@ function FeedVideoItem({
   onShare: () => void;
   onReport: () => void;
   onInfo: () => void;
+  onDelete: () => void;
 }) {
   const vttUrl = useMemo(() => {
     if (!video.captionsVtt) return null;
@@ -455,12 +492,21 @@ function FeedVideoItem({
           </span>
           <span className="text-xs font-medium">{shareCopied ? "Copied!" : "Share"}</span>
         </button>
-        <button onClick={onReport} aria-label="Report this video" className="flex flex-col items-center gap-1">
-          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-black/40">
-            <Icon name="flag" className="h-5 w-5" />
-          </span>
-          <span className="text-xs font-medium">Report</span>
-        </button>
+        {isMine ? (
+          <button onClick={onDelete} aria-label="Delete this video" className="flex flex-col items-center gap-1">
+            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-black/40">
+              <Icon name="delete" className="h-5 w-5" />
+            </span>
+            <span className="text-xs font-medium">Delete</span>
+          </button>
+        ) : (
+          <button onClick={onReport} aria-label="Report this video" className="flex flex-col items-center gap-1">
+            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-black/40">
+              <Icon name="flag" className="h-5 w-5" />
+            </span>
+            <span className="text-xs font-medium">Report</span>
+          </button>
+        )}
         <button onClick={onInfo} aria-label="Show description and transcript" className="flex flex-col items-center gap-1">
           <span className="flex h-10 w-10 items-center justify-center rounded-full bg-black/40">
             <Icon name="info" className="h-5 w-5" />
@@ -545,6 +591,38 @@ function ReportSheet({
             </div>
           </>
         )}
+      </div>
+    </div>
+  );
+}
+
+function DeleteConfirmSheet({
+  deleting,
+  onCancel,
+  onConfirm,
+}: {
+  deleting: boolean;
+  onCancel: () => void;
+  onConfirm: () => void;
+}) {
+  return (
+    <div className="fixed inset-0 z-[60] bg-black/60 flex items-end sm:items-center justify-center" onClick={onCancel}>
+      <div
+        role="dialog"
+        aria-label="Delete video"
+        onClick={(e) => e.stopPropagation()}
+        className="w-full sm:max-w-md bg-[var(--color-surface-raised)] rounded-t-3xl sm:rounded-3xl p-6"
+      >
+        <h2 className="font-display font-bold text-[var(--color-ink)] mb-2">Delete this video?</h2>
+        <p className="text-sm text-[var(--color-ink-muted)] mb-4">This can&apos;t be undone.</p>
+        <div className="flex justify-end gap-2.5">
+          <Button variant="outline" onClick={onCancel} disabled={deleting}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={onConfirm} disabled={deleting}>
+            {deleting ? "Deleting…" : "Delete"}
+          </Button>
+        </div>
       </div>
     </div>
   );
