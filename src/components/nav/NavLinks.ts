@@ -8,6 +8,7 @@ export interface NavLink {
 export const STAFF_LINKS: NavLink[] = [
   { href: "/dashboard", label: "Home", icon: "home", mobile: true },
   { href: "/discover", label: "Discover", icon: "compass", mobile: true },
+  { href: "/videos", label: "Tips", icon: "video", mobile: true },
   { href: "/develop", label: "Develop", icon: "target", mobile: true },
   { href: "/achievements", label: "Achievements", icon: "trophy", mobile: true },
   { href: "/profile", label: "Profile", icon: "user", mobile: true },
@@ -16,6 +17,7 @@ export const STAFF_LINKS: NavLink[] = [
 export const STAFF_LINKS_DESKTOP: NavLink[] = [
   { href: "/dashboard", label: "Dashboard", icon: "dashboard" },
   { href: "/discover", label: "Discover Skills", icon: "compass" },
+  { href: "/videos", label: "Video Tips", icon: "video" },
   { href: "/develop", label: "My Development", icon: "target" },
   { href: "/progress", label: "In Progress", icon: "clock" },
   { href: "/achievements", label: "Achievements", icon: "trophy" },

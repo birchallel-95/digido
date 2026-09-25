@@ -20,6 +20,7 @@ export default async function AdminOverviewPage() {
       <div className="grid sm:grid-cols-3 gap-4">
         {[
           { href: "/admin/dashboard", icon: "chart", title: "Admin Dashboard", desc: "Sign-ups, per-person RAG ratings, and CSV export." },
+          { href: "/admin/moderation", icon: "video", title: "Video moderation", desc: "Approve, reject or delete video tips; review reports." },
           { href: "/admin/users", icon: "user", title: "Staff accounts", desc: "See who's signed up, their role and onboarding status." },
           { href: "/admin/skills", icon: "spreadsheet", title: "Manage skills", desc: "Add, edit, reorder and deactivate capability skills." },
           { href: "/admin/pedtech", icon: "book", title: "PedTech facts", desc: "Curate the daily PedTech fact content." },

@@ -1,7 +1,12 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import type { SignupPoint } from "@/lib/adminDashboard";
+
+export interface TimeSeriesPoint {
+  date: string; // YYYY-MM-DD
+  count: number;
+  cumulative: number;
+}
 
 const LINE_COLOR = "#2a78d6"; // dataviz reference palette, categorical slot 1 (blue) — a single series, sequential/identity hue
 
@@ -9,7 +14,18 @@ function formatDate(iso: string) {
   return new Date(iso + "T00:00:00Z").toLocaleDateString("en-GB", { day: "numeric", month: "short" });
 }
 
-export function SignupsChart({ points }: { points: SignupPoint[] }) {
+/** A cumulative daily line+area chart — used for sign-ups over time and video uploads over time. */
+export function TimeSeriesChart({
+  points,
+  emptyLabel,
+  chartTitle,
+  countLabel,
+}: {
+  points: TimeSeriesPoint[];
+  emptyLabel: string;
+  chartTitle: string;
+  countLabel: string;
+}) {
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
   const width = 640;
   const height = 200;
@@ -19,27 +35,29 @@ export function SignupsChart({ points }: { points: SignupPoint[] }) {
 
   const maxY = useMemo(() => Math.max(1, ...points.map((p) => p.cumulative)), [points]);
   const niceMax = useMemo(() => {
-    // round up to a clean step so gridlines land on whole numbers
     const step = maxY <= 5 ? 1 : maxY <= 20 ? 5 : maxY <= 100 ? 10 : Math.ceil(maxY / 5 / 10) * 10;
     let max = Math.ceil(maxY / step) * step;
-    // the last point is always the max (cumulative never falls), so if it
-    // lands exactly on the top gridline there's no headroom left for its
-    // direct label — bump one more step so the label has room to sit above it
     if (max <= maxY) max += step;
     return Math.max(step, max);
   }, [maxY]);
 
-  // A single day of data has nothing to draw a line across — centre the one
-  // point instead of pinning it to x=0, which would sit directly under the
-  // y-axis label and collide with it.
   const xFor = (i: number) => (points.length <= 1 ? plotW / 2 : (i / (points.length - 1)) * plotW);
   const yFor = (v: number) => plotH - (v / niceMax) * plotH;
 
   const linePath = points.map((p, i) => `${i === 0 ? "M" : "L"} ${xFor(i).toFixed(2)} ${yFor(p.cumulative).toFixed(2)}`).join(" ");
   const areaPath = `${linePath} L ${xFor(points.length - 1).toFixed(2)} ${plotH} L 0 ${plotH} Z`;
 
-  const gridSteps = 4;
-  const gridValues = Array.from({ length: gridSteps + 1 }, (_, i) => Math.round((niceMax / gridSteps) * i));
+  // Pick the largest divisor of niceMax that's <=4, so every gridline value
+  // is a whole number and none repeat — rounding a fixed 4-way split (e.g.
+  // niceMax=2 -> 0, 0.5, 1, 1.5, 2 rounded to 0,1,1,2,2) produced duplicate
+  // labels at different heights.
+  const gridSteps = useMemo(() => {
+    for (let g = 4; g >= 1; g--) {
+      if (niceMax % g === 0) return g;
+    }
+    return 1;
+  }, [niceMax]);
+  const gridValues = Array.from({ length: gridSteps + 1 }, (_, i) => (niceMax / gridSteps) * i);
 
   const hovered = hoverIndex !== null ? points[hoverIndex] : null;
   const last = points[points.length - 1];
@@ -53,17 +71,19 @@ export function SignupsChart({ points }: { points: SignupPoint[] }) {
   }
 
   if (points.length === 0) {
-    return <p className="text-sm text-[var(--color-ink-muted)]">No sign-ups yet.</p>;
+    return <p className="text-sm text-[var(--color-ink-muted)]">{emptyLabel}</p>;
   }
 
   return (
     <div>
       <div className="relative">
-        <svg viewBox={`0 0 ${width} ${height}`} className="w-full" role="img" aria-labelledby="signups-chart-title">
-          <title id="signups-chart-title">Total sign-ups over time — currently {last.cumulative}</title>
+        {/* aria-label, not a child <title> — React 19 treats any <title> element as
+            document-head metadata and hoists/dedupes it, which empties it right back
+            out of the SVG (and causes a hydration mismatch in the process). */}
+        <svg viewBox={`0 0 ${width} ${height}`} className="w-full" role="img" aria-label={`${chartTitle} — currently ${last.cumulative}`}>
           <g transform={`translate(${padding.left},${padding.top})`}>
-            {gridValues.map((v) => (
-              <g key={v}>
+            {gridValues.map((v, i) => (
+              <g key={i}>
                 <line x1={0} x2={plotW} y1={yFor(v)} y2={yFor(v)} stroke="var(--color-border)" strokeWidth={1} />
                 <text x={-8} y={yFor(v)} textAnchor="end" dominantBaseline="middle" fontSize={10} fill="var(--color-ink-faint)">
                   {v}
@@ -74,36 +94,19 @@ export function SignupsChart({ points }: { points: SignupPoint[] }) {
             <path d={areaPath} fill={LINE_COLOR} fillOpacity={0.1} stroke="none" />
             <path d={linePath} fill="none" stroke={LINE_COLOR} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
 
-            {/* end marker + direct label, per spec: label the endpoint, not every point */}
             <circle cx={xFor(points.length - 1)} cy={yFor(last.cumulative)} r={5} fill={LINE_COLOR} stroke="var(--color-surface-raised)" strokeWidth={2} />
-            <text
-              x={xFor(points.length - 1)}
-              y={yFor(last.cumulative) - 12}
-              textAnchor="end"
-              fontSize={12}
-              fontWeight={600}
-              fill="var(--color-ink)"
-            >
+            <text x={xFor(points.length - 1)} y={yFor(last.cumulative) - 12} textAnchor="end" fontSize={12} fontWeight={600} fill="var(--color-ink)">
               {last.cumulative}
             </text>
 
             {hovered && hoverIndex !== null && (
               <>
-                <line x1={xFor(hoverIndex)} x2={xFor(hoverIndex)} y1={0} y2={plotH} stroke="var(--color-ink-faint)" strokeWidth={1} strokeDasharray="0" opacity={0.4} />
+                <line x1={xFor(hoverIndex)} x2={xFor(hoverIndex)} y1={0} y2={plotH} stroke="var(--color-ink-faint)" strokeWidth={1} opacity={0.4} />
                 <circle cx={xFor(hoverIndex)} cy={yFor(hovered.cumulative)} r={5} fill={LINE_COLOR} stroke="var(--color-surface-raised)" strokeWidth={2} />
               </>
             )}
 
-            {/* transparent hover surface */}
-            <rect
-              x={0}
-              y={0}
-              width={plotW}
-              height={plotH}
-              fill="transparent"
-              onMouseMove={handleMove}
-              onMouseLeave={() => setHoverIndex(null)}
-            />
+            <rect x={0} y={0} width={plotW} height={plotH} fill="transparent" onMouseMove={handleMove} onMouseLeave={() => setHoverIndex(null)} />
 
             {points.length <= 1 ? (
               <text x={plotW / 2} y={plotH + 20} textAnchor="middle" fontSize={10} fill="var(--color-ink-faint)">
@@ -139,18 +142,12 @@ export function SignupsChart({ points }: { points: SignupPoint[] }) {
         </summary>
         <div className="mt-2 overflow-x-auto max-h-56">
           <table className="w-full text-sm border-collapse">
-            <caption className="sr-only">Sign-ups by day</caption>
+            <caption className="sr-only">{chartTitle} by day</caption>
             <thead>
               <tr className="text-left text-[var(--color-ink-faint)] sticky top-0 bg-[var(--color-surface-raised)]">
-                <th scope="col" className="py-1.5 pr-3 font-medium">
-                  Date
-                </th>
-                <th scope="col" className="py-1.5 px-3 font-medium text-right">
-                  New sign-ups
-                </th>
-                <th scope="col" className="py-1.5 pl-3 font-medium text-right">
-                  Total
-                </th>
+                <th scope="col" className="py-1.5 pr-3 font-medium">Date</th>
+                <th scope="col" className="py-1.5 px-3 font-medium text-right">{countLabel}</th>
+                <th scope="col" className="py-1.5 pl-3 font-medium text-right">Total</th>
               </tr>
             </thead>
             <tbody>

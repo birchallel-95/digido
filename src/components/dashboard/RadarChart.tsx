@@ -44,8 +44,9 @@ export function RadarChart({ areas }: { areas: AreaProgress[] }) {
 
   return (
     <div>
-      <svg viewBox={`0 0 ${size} ${size}`} className="w-full max-w-sm mx-auto" role="img" aria-labelledby="radar-title">
-        <title id="radar-title">Progress across all six digital capability areas</title>
+      {/* aria-label, not a child <title> — React 19 treats any <title> element as
+          document-head metadata and hoists/dedupes it, emptying it back out of the SVG. */}
+      <svg viewBox={`0 0 ${size} ${size}`} className="w-full max-w-sm mx-auto" role="img" aria-label="Progress across all six digital capability areas">
         {ringLevels.map((lvl) => {
           const pts = areas.map((_, i) => pointFor(i, lvl));
           return (

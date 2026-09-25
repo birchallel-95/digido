@@ -21,6 +21,7 @@ export interface SkillWithStatus {
   status: SkillStatusValue | null; // null = never assessed
   statusUpdatedAt: string | null;
   isPriority: boolean;
+  videoTipCount: number;
 }
 
 export interface LevelProgress {

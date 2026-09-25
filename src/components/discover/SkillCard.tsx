@@ -1,3 +1,6 @@
+"use client";
+
+import { useRouter } from "next/navigation";
 import { Icon } from "@/components/ui/Icon";
 import { BenefitTag } from "@/components/ui/Tag";
 import { LevelBadge } from "@/components/ui/LevelBadge";
@@ -5,6 +8,9 @@ import type { BenefitCategory } from "@/lib/constants";
 import type { SkillWithStatus } from "@/types/domain";
 
 export function SkillCard({ skill }: { skill: SkillWithStatus }) {
+  const router = useRouter();
+  const tipsHref = skill.videoTipCount > 0 ? `/videos?skillId=${skill.id}` : `/videos/upload?skillId=${skill.id}`;
+
   return (
     <div className="rounded-[1.75rem] bg-[var(--color-surface-raised)] border border-[var(--color-border)] shadow-[var(--shadow-raised)] p-6 sm:p-8 flex flex-col h-full select-none">
       <div className="flex items-center justify-between mb-4">
@@ -60,6 +66,24 @@ export function SkillCard({ skill }: { skill: SkillWithStatus }) {
           ))}
         </div>
       )}
+
+      <a
+        href={tipsHref}
+        onPointerDown={(e) => e.stopPropagation()}
+        onClick={(e) => {
+          // A plain onClick + imperative push, not next/link — this card sits
+          // inside a framer-motion `drag` gesture, which can swallow a
+          // Link's own click-driven navigation even when propagation is
+          // stopped (its pan/gesture handling runs ahead of it either way).
+          e.preventDefault();
+          e.stopPropagation();
+          router.push(tipsHref);
+        }}
+        className="mb-2 inline-flex items-center gap-1.5 self-start rounded-full border border-[var(--color-border)] bg-[var(--color-surface-sunken)] px-3 py-1.5 text-xs font-semibold text-[var(--color-ink)] hover:bg-[var(--color-border)] transition-colors"
+      >
+        <Icon name="video" className="h-3.5 w-3.5" />
+        {skill.videoTipCount > 0 ? `Watch tips (${skill.videoTipCount})` : "Be the first to add a tip"}
+      </a>
 
       <div className="mt-auto pt-3 flex items-center gap-4 text-xs text-[var(--color-ink-faint)]">
         {skill.estimatedTimeMins && (

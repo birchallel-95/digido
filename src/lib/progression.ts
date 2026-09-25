@@ -5,6 +5,7 @@ import {
   type LevelName,
 } from "@/lib/constants";
 import { getUserPlatform, platformWhere } from "@/lib/platform";
+import { getVideoCountsBySkill } from "@/lib/videoFeed";
 import type { AreaProgress, LevelProgress, SkillWithStatus } from "@/types/domain";
 
 const LEVEL_ORDER: LevelName[] = ["Navigator", "Elevator", "Catalyst"];
@@ -112,9 +113,10 @@ export async function getSkillsForAreaLevel(
   areaId: string,
   levelName: LevelName
 ): Promise<SkillWithStatus[]> {
-  const [level, platform] = await Promise.all([
+  const [level, platform, videoCounts] = await Promise.all([
     prisma.level.findUnique({ where: { name: levelName } }),
     getUserPlatform(userId),
+    getVideoCountsBySkill(),
   ]);
   if (!level) return [];
 
@@ -149,6 +151,7 @@ export async function getSkillsForAreaLevel(
     status: (s.statuses[0]?.status as SkillWithStatus["status"]) ?? null,
     statusUpdatedAt: s.statuses[0]?.updatedAt.toISOString() ?? null,
     isPriority: s.priorities.length > 0,
+    videoTipCount: videoCounts.get(s.id) ?? 0,
   }));
 }
 

@@ -43,3 +43,6 @@ next-env.d.ts
 .env
 *.db
 
+# local-dev video storage fallback (used when R2 credentials aren't set — see src/lib/storage.ts)
+/uploads
+

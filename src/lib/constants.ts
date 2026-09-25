@@ -142,3 +142,26 @@ export const PLATFORM_SHORT_LABELS: Record<PlatformPreference, string> = {
   MICROSOFT: "Microsoft",
   BOTH: "Both",
 };
+
+// ---------------------------------------------------------------------------
+// Short-tip videos
+// ---------------------------------------------------------------------------
+
+export const VIDEO_TYPES = ["TOP_TIP", "EASY_HACK", "EXAMPLE"] as const;
+export type VideoType = (typeof VIDEO_TYPES)[number];
+
+export const VIDEO_TYPE_LABELS: Record<VideoType, string> = {
+  TOP_TIP: "Top Tip",
+  EASY_HACK: "Easy Hack",
+  EXAMPLE: "Example",
+};
+
+export const VIDEO_STATUSES = ["PENDING", "APPROVED", "REJECTED"] as const;
+export type VideoStatus = (typeof VIDEO_STATUSES)[number];
+
+export const CAPTIONS_SOURCES = ["AI_GENERATED", "AI_EDITED", "UPLOADED_FILE", "MANUAL_TRANSCRIPT"] as const;
+export type CaptionsSource = (typeof CAPTIONS_SOURCES)[number];
+
+export const VIDEO_MAX_DURATION_SECONDS = 60;
+export const VIDEO_MAX_FILE_SIZE_BYTES = 100 * 1024 * 1024; // 100MB
+export const VIDEO_ACCEPTED_MIME_TYPES = ["video/mp4", "video/quicktime"]; // .mp4, .mov

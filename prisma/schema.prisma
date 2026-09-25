@@ -42,6 +42,9 @@ model User {
   milestones    UserMilestone[]
   evidence      Evidence[]
   priorities    UserPriority[]
+  videos        Video[]
+  videoHelpfuls VideoHelpful[]
+  videoReports  VideoReport[]
   checkpointCompletions CheckpointCompletion[]
 }
 
@@ -137,6 +140,7 @@ model Skill {
   activities DevelopmentActivity[]
   evidence   Evidence[]
   priorities UserPriority[]
+  videoTags  VideoSkillTag[]
 
   @@index([capabilityAreaId, levelId])
 }
@@ -274,6 +278,98 @@ model PedTechFact {
   active      Boolean   @default(true)
   displayDate DateTime?
   createdAt   DateTime  @default(now())
+}
+
+// ---------------------------------------------------------------------------
+// Short-tip videos (TikTok/Reels-style feed linked to the capability matrix)
+// ---------------------------------------------------------------------------
+
+model Video {
+  id              String    @id @default(cuid())
+  uploaderId      String
+  title           String
+  description     String?
+  type            String // enum: TOP_TIP | EASY_HACK | EXAMPLE
+  status          String    @default("PENDING") // enum: PENDING | APPROVED | REJECTED
+  rejectionReason String?
+
+  storageKey    String // object key of the source video in the bucket
+  mimeType      String
+  fileSize      Int
+  durationSeconds Float
+  width         Int?
+  height        Int? // width/height decide portrait-fit vs letterboxed playback
+
+  captionsVtt    String? // WebVTT text — required (this or transcriptText) before publishing
+  transcriptText String? // plain-text fallback transcript/summary, shown in the Info panel
+  captionsSource String? // enum: AI_GENERATED | AI_EDITED | UPLOADED_FILE | MANUAL_TRANSCRIPT
+
+  agreedToPolicy Boolean @default(false) // upload agreement checkbox, required to submit
+
+  helpfulCount Int @default(0) // cached count, kept in sync by toggleHelpful
+  viewCount    Int @default(0) // cached count, kept in sync by recordView
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  publishedAt DateTime? // set when an admin approves it
+
+  uploader User            @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
+  skillTags VideoSkillTag[]
+  helpfuls  VideoHelpful[]
+  reports   VideoReport[]
+  views     VideoView[]
+
+  @@index([status, createdAt])
+  @@index([status, helpfulCount])
+}
+
+model VideoSkillTag {
+  id      String @id @default(cuid())
+  videoId String
+  skillId String
+
+  video Video @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  skill Skill @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@unique([videoId, skillId])
+  @@index([skillId])
+}
+
+model VideoHelpful {
+  id        String   @id @default(cuid())
+  videoId   String
+  userId    String
+  createdAt DateTime @default(now())
+
+  video Video @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([videoId, userId])
+}
+
+model VideoReport {
+  id         String   @id @default(cuid())
+  videoId    String
+  reporterId String
+  reason     String?
+  resolved   Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  video    Video @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  reporter User  @relation(fields: [reporterId], references: [id], onDelete: Cascade)
+}
+
+// Individual view events (not just a counter) so admin stats can chart views
+// over time, not merely a running total.
+model VideoView {
+  id        String   @id @default(cuid())
+  videoId   String
+  userId    String?
+  createdAt DateTime @default(now())
+
+  video Video @relation(fields: [videoId], references: [id], onDelete: Cascade)
+
+  @@index([videoId, createdAt])
 }
 
 // ---------------------------------------------------------------------------
