@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, useAnimation, useReducedMotion, type PanInfo } from "framer-motion";
-import { setSkillStatus, clearSkillStatus } from "@/lib/skillActions";
+import { setSkillStatus, clearSkillStatus, addEvidence } from "@/lib/skillActions";
 import { SkillCard } from "@/components/discover/SkillCard";
 import { Button } from "@/components/ui/Button";
 import { Icon } from "@/components/ui/Icon";
@@ -51,14 +51,19 @@ export function SwipeDeck({
   const [history, setHistory] = useState<{ skillId: string; index: number }[]>([]);
   const [banner, setBanner] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  // A reflection is required before a skill can be marked mastered (right
+  // swipe / "I've got this"). If the skill already has one, mastering is
+  // immediate; otherwise this pauses the swipe and asks for one first.
+  const [pendingMastery, setPendingMastery] = useState(false);
+  const [reflection, setReflection] = useState("");
   const controls = useAnimation();
   const prefersReducedMotion = useReducedMotion();
 
   const current = queue[index];
 
-  const commit = useCallback(
+  const performCommit = useCallback(
     async (direction: Direction) => {
-      if (!current || pending) return;
+      if (!current) return;
       setPending(true);
       const status: SkillStatusValue = SWIPE_STATUS_MAP[direction];
       await controls.start({
@@ -84,8 +89,35 @@ export function SwipeDeck({
       setPending(false);
       router.refresh();
     },
-    [current, pending, controls, index, router, prefersReducedMotion]
+    [current, controls, index, router, prefersReducedMotion]
   );
+
+  const commit = useCallback(
+    (direction: Direction) => {
+      if (!current || pending) return;
+      if (direction === "right" && !current.hasEvidence) {
+        controls.start({ x: 0, y: 0, transition: { type: "spring", stiffness: 400, damping: 30 } });
+        setPendingMastery(true);
+        return;
+      }
+      performCommit(direction);
+    },
+    [current, pending, controls, performCommit]
+  );
+
+  function cancelMastery() {
+    setPendingMastery(false);
+    setReflection("");
+  }
+
+  async function confirmMastery() {
+    if (!current || !reflection.trim()) return;
+    setPending(true);
+    await addEvidence({ skillId: current.id, reflection });
+    setReflection("");
+    setPendingMastery(false);
+    await performCommit("right");
+  }
 
   async function undo() {
     const last = history[history.length - 1];
@@ -99,6 +131,10 @@ export function SwipeDeck({
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
+      if (pendingMastery) {
+        if (e.key === "Escape") cancelMastery();
+        return; // let arrow keys etc. behave normally inside the reflection textarea
+      }
       if (pending || !current) return;
       if (e.key === "ArrowLeft") commit("left");
       else if (e.key === "ArrowUp") {
@@ -108,7 +144,7 @@ export function SwipeDeck({
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [commit, pending, current]);
+  }, [commit, pending, current, pendingMastery]);
 
   function handleDragEnd(_: unknown, info: PanInfo) {
     const { offset, velocity } = info;
@@ -180,13 +216,13 @@ export function SwipeDeck({
         )}
         <motion.div
           key={current.id}
-          drag
+          drag={!pendingMastery}
           dragElastic={0.6}
           dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
           onDragEnd={handleDragEnd}
           animate={controls}
           initial={{ x: 0, y: 0, opacity: 1 }}
-          className="relative cursor-grab active:cursor-grabbing"
+          className={pendingMastery ? "relative" : "relative cursor-grab active:cursor-grabbing"}
           role="group"
           aria-roledescription="skill card"
           aria-label={`${current.title}. Use the buttons below, or arrow keys, to record your status.`}
@@ -195,28 +231,55 @@ export function SwipeDeck({
         </motion.div>
       </div>
 
-      <div className="grid grid-cols-3 gap-3 mt-6" role="group" aria-label="Assess this skill">
-        {(["left", "up", "right"] as Direction[]).map((dir) => {
-          const meta = DIRECTION_META[dir];
-          return (
-            <button
-              key={dir}
-              onClick={() => commit(dir)}
-              disabled={pending}
-              className="flex flex-col items-center gap-1.5 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface-raised)] py-4 text-xs font-semibold hover:shadow-[var(--shadow-card)] transition-shadow disabled:opacity-50"
-              style={{ color: meta.color }}
-            >
-              <Icon name={meta.icon} className="h-5 w-5" />
-              {meta.label}
-            </button>
-          );
-        })}
-      </div>
-      <p className="text-center text-xs text-[var(--color-ink-faint)] mt-4">
-        Swipe, tap a button, or use the arrow keys (← need to learn · ↑ working on it · → I&apos;ve got this).
-      </p>
-      {current.isPriority && (
-        <p className="text-center text-xs text-[var(--color-brand-text)] mt-1 font-medium">⭐ You flagged this as a priority</p>
+      {pendingMastery ? (
+        <div className="mt-6 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface-raised)] p-4">
+          <label htmlFor="swipe-mastery-reflection" className="block text-sm font-medium text-[var(--color-ink)] mb-2">
+            Add a quick reflection to mark this as mastered — a sentence or two is fine.
+          </label>
+          <textarea
+            id="swipe-mastery-reflection"
+            autoFocus
+            value={reflection}
+            onChange={(e) => setReflection(e.target.value)}
+            placeholder={current.evidencePrompt ?? "How have you used this so far?"}
+            rows={2}
+            className="w-full rounded-xl border border-[var(--color-border)] px-3 py-2 text-sm bg-[var(--color-surface)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-text)]"
+          />
+          <div className="flex gap-2 mt-3">
+            <Button size="sm" onClick={confirmMastery} disabled={!reflection.trim() || pending}>
+              Save &amp; mark as mastered
+            </Button>
+            <Button size="sm" variant="ghost" onClick={cancelMastery}>
+              Cancel
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <>
+          <div className="grid grid-cols-3 gap-3 mt-6" role="group" aria-label="Assess this skill">
+            {(["left", "up", "right"] as Direction[]).map((dir) => {
+              const meta = DIRECTION_META[dir];
+              return (
+                <button
+                  key={dir}
+                  onClick={() => commit(dir)}
+                  disabled={pending}
+                  className="flex flex-col items-center gap-1.5 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface-raised)] py-4 text-xs font-semibold hover:shadow-[var(--shadow-card)] transition-shadow disabled:opacity-50"
+                  style={{ color: meta.color }}
+                >
+                  <Icon name={meta.icon} className="h-5 w-5" />
+                  {meta.label}
+                </button>
+              );
+            })}
+          </div>
+          <p className="text-center text-xs text-[var(--color-ink-faint)] mt-4">
+            Swipe, tap a button, or use the arrow keys (← need to learn · ↑ working on it · → I&apos;ve got this).
+          </p>
+          {current.isPriority && (
+            <p className="text-center text-xs text-[var(--color-brand-text)] mt-1 font-medium">⭐ You flagged this as a priority</p>
+          )}
+        </>
       )}
     </div>
   );

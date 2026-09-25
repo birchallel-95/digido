@@ -25,7 +25,7 @@ export function RecentAchievements({ items }: { items: RecentAchievement[] }) {
           </div>
         </li>
       ))}
-      <Link href="/achievements" className="block text-sm font-medium text-[var(--color-brand-text)] hover:underline pt-1">
+      <Link href="/my-progress?view=achieved" className="block text-sm font-medium text-[var(--color-brand-text)] hover:underline pt-1">
         View all achievements →
       </Link>
     </ul>

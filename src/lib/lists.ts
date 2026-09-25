@@ -20,6 +20,7 @@ export interface StatusListItem {
   targetDate: string | null;
   startedAt: string | null;
   isPriority: boolean;
+  hasEvidence: boolean;
   updatedAt: string;
 }
 
@@ -28,7 +29,14 @@ export async function getSkillsByStatus(userId: string, status: SkillStatusValue
     where: { userId, status },
     orderBy: { updatedAt: "desc" },
     include: {
-      skill: { include: { capabilityArea: true, level: true, priorities: { where: { userId } } } },
+      skill: {
+        include: {
+          capabilityArea: true,
+          level: true,
+          priorities: { where: { userId } },
+          evidence: { where: { userId } },
+        },
+      },
     },
   });
 
@@ -51,6 +59,7 @@ export async function getSkillsByStatus(userId: string, status: SkillStatusValue
     targetDate: r.targetDate?.toISOString() ?? null,
     startedAt: r.startedAt?.toISOString() ?? null,
     isPriority: r.skill.priorities.length > 0,
+    hasEvidence: r.skill.evidence.length > 0,
     updatedAt: r.updatedAt.toISOString(),
   }));
 }

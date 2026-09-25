@@ -104,9 +104,7 @@ export async function setSkillStatus(
 
   revalidatePath("/dashboard");
   revalidatePath("/discover");
-  revalidatePath("/develop");
-  revalidatePath("/progress");
-  revalidatePath("/achievements");
+  revalidatePath("/my-progress");
   revalidatePath(`/areas/${skill.capabilityAreaId}`);
 
   return { ok: true, newlyEarnedMilestones, levelJustCompleted };
@@ -135,8 +133,7 @@ export async function updateSkillMeta(skillId: string, opts: { notes?: string; t
       targetDate: opts.targetDate === null ? null : opts.targetDate ? new Date(opts.targetDate) : undefined,
     },
   });
-  revalidatePath("/develop");
-  revalidatePath("/progress");
+  revalidatePath("/my-progress");
   return { ok: true };
 }
 
@@ -152,7 +149,7 @@ export async function togglePriority(skillId: string) {
   } else {
     await prisma.userPriority.create({ data: { userId, skillId } });
   }
-  revalidatePath("/develop");
+  revalidatePath("/my-progress");
   return { ok: true, isPriority: !existing };
 }
 
@@ -185,6 +182,6 @@ export async function addEvidence(params: {
   });
   await checkAndAwardMilestones(userId);
   revalidatePath("/passport");
-  revalidatePath("/progress");
+  revalidatePath("/my-progress");
   return { ok: true };
 }

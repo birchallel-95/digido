@@ -21,6 +21,7 @@ export interface SkillWithStatus {
   status: SkillStatusValue | null; // null = never assessed
   statusUpdatedAt: string | null;
   isPriority: boolean;
+  hasEvidence: boolean;
   videoTipCount: number;
 }
 

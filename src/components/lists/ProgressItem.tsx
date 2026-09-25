@@ -11,18 +11,29 @@ import type { StatusListItem } from "@/lib/lists";
 export function ProgressItem({ item }: { item: StatusListItem }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  // A reflection is required before a skill can be marked mastered. If one's
+  // already been added while it was in progress, mastering is one click; if
+  // not, clicking "Mark as mastered" opens the same textarea to collect it.
   const [showEvidence, setShowEvidence] = useState(false);
+  const [pendingMastery, setPendingMastery] = useState(false);
   const [reflection, setReflection] = useState("");
   const [celebrate, setCelebrate] = useState<string | null>(null);
 
+  async function finishMastering() {
+    const result = await setSkillStatus(item.skillId, "MASTERED");
+    if (result.levelJustCompleted) {
+      setCelebrate(`🏆 ${result.levelJustCompleted.levelName} complete in ${result.levelJustCompleted.areaName}!`);
+    }
+    router.refresh();
+  }
+
   function markMastered() {
-    startTransition(async () => {
-      const result = await setSkillStatus(item.skillId, "MASTERED");
-      if (result.levelJustCompleted) {
-        setCelebrate(`🏆 ${result.levelJustCompleted.levelName} complete in ${result.levelJustCompleted.areaName}!`);
-      }
-      router.refresh();
-    });
+    if (!item.hasEvidence) {
+      setPendingMastery(true);
+      setShowEvidence(true);
+      return;
+    }
+    startTransition(finishMastering);
   }
 
   function submitEvidence() {
@@ -30,7 +41,12 @@ export function ProgressItem({ item }: { item: StatusListItem }) {
       await addEvidence({ skillId: item.skillId, reflection });
       setShowEvidence(false);
       setReflection("");
-      router.refresh();
+      if (pendingMastery) {
+        setPendingMastery(false);
+        await finishMastering();
+      } else {
+        router.refresh();
+      }
     });
   }
 
@@ -66,16 +82,30 @@ export function ProgressItem({ item }: { item: StatusListItem }) {
             <Icon name="external" className="h-3.5 w-3.5" /> Learning resource
           </a>
         )}
-        <button
-          onClick={() => setShowEvidence((s) => !s)}
-          className="inline-flex items-center gap-1 text-sm text-[var(--color-ink-muted)] hover:text-[var(--color-ink)]"
-        >
-          <Icon name="edit" className="h-3.5 w-3.5" /> Add reflection
-        </button>
+        {item.hasEvidence ? (
+          <span className="inline-flex items-center gap-1 text-sm text-[var(--color-brand-text)]">
+            <Icon name="edit" className="h-3.5 w-3.5" /> Reflection added
+          </span>
+        ) : (
+          <button
+            onClick={() => {
+              setPendingMastery(false);
+              setShowEvidence((s) => !s);
+            }}
+            className="inline-flex items-center gap-1 text-sm text-[var(--color-ink-muted)] hover:text-[var(--color-ink)]"
+          >
+            <Icon name="edit" className="h-3.5 w-3.5" /> Add reflection
+          </button>
+        )}
       </div>
 
       {showEvidence && (
         <div className="mt-3">
+          {pendingMastery && (
+            <p className="text-xs text-[var(--color-ink-muted)] mb-1.5">
+              Add a quick reflection to mark this as mastered — a sentence or two is fine.
+            </p>
+          )}
           <label htmlFor={`reflection-${item.skillId}`} className="sr-only">
             Reflection on {item.title}
           </label>
@@ -89,9 +119,16 @@ export function ProgressItem({ item }: { item: StatusListItem }) {
           />
           <div className="flex gap-2 mt-2">
             <Button size="sm" onClick={submitEvidence} disabled={!reflection.trim() || isPending}>
-              Save
+              {pendingMastery ? "Save & mark as mastered" : "Save"}
             </Button>
-            <Button size="sm" variant="ghost" onClick={() => setShowEvidence(false)}>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => {
+                setShowEvidence(false);
+                setPendingMastery(false);
+              }}
+            >
               Cancel
             </Button>
           </div>

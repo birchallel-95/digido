@@ -23,8 +23,7 @@ export async function updatePlatformPreference(platformPreference: PlatformPrefe
   revalidatePath("/profile");
   revalidatePath("/dashboard");
   revalidatePath("/discover");
-  revalidatePath("/develop");
-  revalidatePath("/progress");
+  revalidatePath("/my-progress");
   return { ok: true };
 }
 

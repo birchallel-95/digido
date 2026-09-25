@@ -30,6 +30,7 @@ export interface MasteredSkillView {
   levelName: LevelName;
   masteredAt: string | null;
   hasEvidence: boolean;
+  reflection: string | null;
 }
 
 export async function getAchievementsData(userId: string) {
@@ -79,6 +80,7 @@ export async function getAchievementsData(userId: string) {
     levelName: s.skill.level.name as LevelName,
     masteredAt: s.masteredAt?.toISOString() ?? null,
     hasEvidence: s.skill.evidence.length > 0,
+    reflection: s.skill.evidence.find((e) => e.reflection)?.reflection ?? null,
   }));
 
   return {

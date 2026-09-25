@@ -127,6 +127,7 @@ export async function getSkillsForAreaLevel(
       capabilityArea: true,
       statuses: { where: { userId } },
       priorities: { where: { userId } },
+      evidence: { where: { userId } },
     },
   });
 
@@ -151,6 +152,7 @@ export async function getSkillsForAreaLevel(
     status: (s.statuses[0]?.status as SkillWithStatus["status"]) ?? null,
     statusUpdatedAt: s.statuses[0]?.updatedAt.toISOString() ?? null,
     isPriority: s.priorities.length > 0,
+    hasEvidence: s.evidence.length > 0,
     videoTipCount: videoCounts.get(s.id) ?? 0,
   }));
 }
