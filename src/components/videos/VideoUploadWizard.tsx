@@ -16,7 +16,7 @@ import {
   type TagPickerArea,
 } from "@/lib/videoActions";
 import type { CaptionSegment } from "@/lib/captions";
-import { VIDEO_MAX_DURATION_SECONDS, VIDEO_MAX_FILE_SIZE_BYTES, VIDEO_TYPE_LABELS, VIDEO_TYPES, type VideoType } from "@/lib/constants";
+import { VIDEO_MAX_DURATION_SECONDS, VIDEO_MAX_DURATION_LABEL, VIDEO_MAX_FILE_SIZE_BYTES, VIDEO_TYPE_LABELS, VIDEO_TYPES, type VideoType } from "@/lib/constants";
 
 type Stage = "capture" | "uploading" | "captions" | "details" | "done";
 type CaptionsSourceKind = "AI_GENERATED" | "AI_EDITED" | "UPLOADED_FILE" | "MANUAL_TRANSCRIPT";
@@ -171,7 +171,7 @@ export function VideoUploadWizard({ tagOptions, captionsAiAvailable }: { tagOpti
     probeEl.onloadedmetadata = () => {
       if (probeEl.duration > VIDEO_MAX_DURATION_SECONDS + 2) {
         setClientError(
-          `That clip is about ${Math.round(probeEl.duration)}s — tips need to be 60 seconds or under. Trim it and try again!`
+          `That clip is about ${Math.round(probeEl.duration)}s — tips need to be ${VIDEO_MAX_DURATION_LABEL} or under. Trim it and try again!`
         );
         URL.revokeObjectURL(url);
         return;
@@ -326,7 +326,7 @@ export function VideoUploadWizard({ tagOptions, captionsAiAvailable }: { tagOpti
               >
                 <Icon name="camera" className="h-6 w-6 text-[var(--color-ink-faint)]" />
                 <span className="text-sm font-medium text-[var(--color-ink)]">Record with camera</span>
-                <span className="text-xs text-[var(--color-ink-faint)]">Up to 60 seconds</span>
+                <span className="text-xs text-[var(--color-ink-faint)]">Up to {VIDEO_MAX_DURATION_LABEL}</span>
               </button>
             </div>
           ) : (

@@ -8,12 +8,13 @@ import { probeVideo } from "@/lib/videoProbe";
 import { generateCaptions, captionsAiConfigured, segmentsToVtt, segmentsToPlainText, parseCaptionFile, type CaptionSegment } from "@/lib/captions";
 import {
   VIDEO_MAX_DURATION_SECONDS,
+  VIDEO_MAX_DURATION_LABEL,
   VIDEO_MAX_FILE_SIZE_BYTES,
   type VideoType,
 } from "@/lib/constants";
 
-// A little headroom over the 60s cap so a clip that's genuinely 60.0s but
-// probes at 60.03s isn't rejected on a rounding technicality.
+// A little headroom over the cap so a clip that's genuinely at the limit but
+// probes a fraction over isn't rejected on a rounding technicality.
 const DURATION_TOLERANCE_SECONDS = 1.5;
 
 export interface TagPickerArea {
@@ -79,7 +80,7 @@ export interface ProbeUploadResult {
   error?: string;
 }
 
-/** Server-side duration/dimension check — the real 60s enforcement, not just the client's courtesy check. */
+/** Server-side duration/dimension check — the real duration-limit enforcement, not just the client's courtesy check. */
 export async function probeUploadedVideo(key: string, fileSize: number): Promise<ProbeUploadResult> {
   await requireUser();
   try {
@@ -93,7 +94,7 @@ export async function probeUploadedVideo(key: string, fileSize: number): Promise
       await deleteObject(key);
       return {
         ok: false,
-        error: `That clip is ${Math.round(durationSeconds)}s — tips need to be 60 seconds or under. Trim it and try again!`,
+        error: `That clip is ${Math.round(durationSeconds)}s — tips need to be ${VIDEO_MAX_DURATION_LABEL} or under. Trim it and try again!`,
       };
     }
     if (fileSize > VIDEO_MAX_FILE_SIZE_BYTES) {

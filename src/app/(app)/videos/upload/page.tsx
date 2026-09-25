@@ -3,6 +3,7 @@ import { requireUser } from "@/lib/session";
 import { getVideoTagOptions } from "@/lib/videoActions";
 import { captionsAiConfigured } from "@/lib/captions";
 import { uploadsAvailable } from "@/lib/storage";
+import { VIDEO_MAX_DURATION_LABEL } from "@/lib/constants";
 import { VideoUploadWizard } from "@/components/videos/VideoUploadWizard";
 import { Icon } from "@/components/ui/Icon";
 
@@ -14,7 +15,7 @@ export default async function UploadVideoPage() {
     <div className="space-y-6">
       <div>
         <h1 className="font-display text-2xl sm:text-3xl font-bold text-[var(--color-ink)]">Share a video tip</h1>
-        <p className="text-[var(--color-ink-muted)] mt-1">A quick top tip, hack, or example — up to 60 seconds.</p>
+        <p className="text-[var(--color-ink-muted)] mt-1">A quick top tip, hack, or example — up to {VIDEO_MAX_DURATION_LABEL}.</p>
       </div>
       {uploadsAvailable ? (
         <Suspense>

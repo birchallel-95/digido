@@ -14,8 +14,9 @@ export interface ProbeResult {
  * Reads duration/dimensions straight off the uploaded file's URL — ffprobe
  * can read HTTP(S) input directly (including a presigned R2 GET URL or our
  * local dev route), so we never have to download the whole clip server-side
- * just to validate it. This is what actually enforces the 60-second cap:
- * client-side duration checks are a courtesy, not a guarantee.
+ * just to validate it. This is what actually enforces the duration cap
+ * (see VIDEO_MAX_DURATION_SECONDS): client-side duration checks are a
+ * courtesy, not a guarantee.
  */
 export async function probeVideo(url: string): Promise<ProbeResult> {
   const { stdout } = await execFileAsync(ffprobeStatic.path, [

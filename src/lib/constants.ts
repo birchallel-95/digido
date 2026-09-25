@@ -162,6 +162,7 @@ export type VideoStatus = (typeof VIDEO_STATUSES)[number];
 export const CAPTIONS_SOURCES = ["AI_GENERATED", "AI_EDITED", "UPLOADED_FILE", "MANUAL_TRANSCRIPT"] as const;
 export type CaptionsSource = (typeof CAPTIONS_SOURCES)[number];
 
-export const VIDEO_MAX_DURATION_SECONDS = 60;
+export const VIDEO_MAX_DURATION_SECONDS = 120;
+export const VIDEO_MAX_DURATION_LABEL = "2 minutes"; // friendly phrasing kept in sync with the seconds value above — update both together
 export const VIDEO_MAX_FILE_SIZE_BYTES = 100 * 1024 * 1024; // 100MB
 export const VIDEO_ACCEPTED_MIME_TYPES = ["video/mp4", "video/quicktime"]; // .mp4, .mov
